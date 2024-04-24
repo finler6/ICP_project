@@ -5,7 +5,7 @@ class Robot {
 public:
     Robot(int id, std::pair<double, double> position, double velocity, double orientation, double size);
     virtual ~Robot() = default;
-
+    bool isTaskCompleted() const;
     // Основные действия, которые должен выполнять каждый робот
     virtual void move() = 0;
     virtual void rotate(double angle) = 0;
@@ -15,7 +15,8 @@ public:
     std::pair<double, double> getPosition() const;
     double getSize() const;
     double getOrientation() const;
-
+private:
+    bool taskCompleted;  // Переменная для хранения статуса задачи
 protected:
     int id;
     std::pair<double, double> position; // Координаты (x, y)

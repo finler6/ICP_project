@@ -1,5 +1,8 @@
 #include "Environment.h"
+#include "RemoteControlledRobot.h"
+#include "AutonomousRobot.h"
 #include <cmath>
+
 
 Environment::Environment() {}
 
@@ -9,6 +12,13 @@ Environment::~Environment() {
 
 void Environment::addRobot(Robot* robot) {
     robots.push_back(robot);
+}
+std::vector<Robot*>& Environment::getRobots() {
+    return robots;
+}
+
+int Environment::getCollisionCount() const {
+    return collisionCount;
 }
 
 void Environment::addObstacle(const Obstacle& obstacle) {
@@ -46,5 +56,48 @@ bool Environment::isCollision(const std::pair<double, double>& pos1, double size
     double dy = pos1.second - pos2.second;
     double distance = sqrt(dx * dx + dy * dy);
     return distance < (size1 + size2); // Проверка перекрытия кругов
+}
+
+void Environment::loadConfiguration(const std::string& filename) {
+    std::ifstream file(filename);
+    std::string line;
+    if (!file.is_open()) {
+        std::cerr << "Unable to open file: " << filename << std::endl;
+        return;
+    }
+
+    while (getline(file, line)) {
+        std::istringstream iss(line);
+        std::string type;
+        iss >> type; // Read the type of the object (Robot or Obstacle)
+
+        if (type == "Robot") {
+            std::string robotType;
+            int id;
+            double x, y, speed, direction, sensor_range;
+
+            iss >> robotType >> id >> x >> y >> speed >> direction >> sensor_range;
+            Robot* robot = nullptr;
+
+            if (robotType == "autonomous") {
+                robot = new AutonomousRobot(id, {x, y}, speed, direction, sensor_range);
+            } else if (robotType == "remote") {
+                robot = new RemoteControlledRobot(id, {x, y}, speed, direction, sensor_range);
+            }
+
+            if (robot) {
+                addRobot(robot);
+            }
+        } else if (type == "Obstacle") {
+            double x, y, size;
+            iss >> x >> y >> size;
+            addObstacle(Obstacle({x, y}, size));
+        }
+    }
+    file.close();
+}
+
+const std::vector<Obstacle>& Environment::getObstacles() const {
+    return obstacles;
 }
 
