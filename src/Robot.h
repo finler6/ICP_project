@@ -7,7 +7,7 @@ public:
     virtual ~Robot() = default;
     bool isTaskCompleted() const;
     // Основные действия, которые должен выполнять каждый робот
-    virtual void move() = 0;
+    virtual void move(double maxWidth, double maxHeight) = 0;
     virtual void rotate(double angle) = 0;
     virtual void handleCollision() = 0;
 

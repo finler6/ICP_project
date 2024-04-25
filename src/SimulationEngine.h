@@ -22,6 +22,7 @@ public:
 
 signals:
     void simulationEnded();
+    void updateGUI();
 
 private:
     Environment* environment;
@@ -29,6 +30,7 @@ private:
     std::chrono::steady_clock::time_point lastUpdate;
     std::chrono::steady_clock::time_point startTime;
     double timeStep;
+    QTimer* timer;
 };
 
 #endif // SIMULATIONENGINE_H

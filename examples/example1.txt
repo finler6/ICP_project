@@ -2,9 +2,10 @@
 # Формат: тип {параметры}
 
 # Роботы
-Robot {type: autonomous, id: 1, position: (50, 50), speed: 1.0, direction: 0.0, sensor_range: 10.0}
-Robot {type: remote, id: 2, position: (100, 100), speed: 1.0, direction: 90.0, sensor_range: 10.0}
+Robot autonomous 1 50 50 10 5.0 10.0
+Robot remote 2 100 100 1.0 90.0 10.0
+Robot autonomous 3 0 0 10 5.0 10.0
 
 # Препятствия
-Obstacle {position: (200, 200), size: 20}
-Obstacle {position: (300, 300), size: 25}
+Obstacle 100 150 20
+Obstacle 200 50 20

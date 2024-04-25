@@ -11,6 +11,8 @@
 
 class Environment {
 public:
+    double width = 800.0;  // ширина рабочей зоны
+    double height = 600.0; // высота рабочей зоны
     Environment();  // Конструктор
     ~Environment();  // Деструктор
     std::vector<Robot*>& getRobots();
@@ -21,12 +23,12 @@ public:
     void clear();
     int getCollisionCount() const;
     const std::vector<Obstacle>& getObstacles() const;
+    bool checkCollisions(Robot* robot);
 
 private:
     int collisionCount;
     std::vector<Robot*> robots;
-    std::vector<Obstacle> obstacles;
-    void checkCollisions(Robot* robot);
+    std::vector<Obstacle> obstacles;;
     bool isCollision(const std::pair<double, double>& pos1, double size1, const std::pair<double, double>& pos2, double size2) const;
 };
 

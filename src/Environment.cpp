@@ -26,8 +26,11 @@ void Environment::addObstacle(const Obstacle& obstacle) {
 }
 
 void Environment::update() {
+    double maxWidth = 800.0; // Пример ширины рабочей области
+    double maxHeight = 600.0; // Пример высоты рабочей области
+
     for (auto& robot : robots) {
-        robot->move();
+        robot->move(maxWidth, maxHeight);
         checkCollisions(robot);
     }
 }
@@ -41,13 +44,17 @@ void Environment::clear() {
     obstacles.clear();
 }
 
-void Environment::checkCollisions(Robot* robot) {
+bool Environment::checkCollisions(Robot* robot) {
     // Проверка столкновений робота с каждым препятствием
+    bool collisionDetected = false;
     for (const auto& obstacle : obstacles) {
         if (isCollision(robot->getPosition(), robot->getSize(), obstacle.getPosition(), obstacle.getSize())) {
             robot->handleCollision(); // Метод для обработки столкновения
+            collisionDetected = true;
+            break;
         }
     }
+    return collisionDetected;
 }
 
 bool Environment::isCollision(const std::pair<double, double>& pos1, double size1, const std::pair<double, double>& pos2, double size2) const {
@@ -90,8 +97,11 @@ void Environment::loadConfiguration(const std::string& filename) {
             }
         } else if (type == "Obstacle") {
             double x, y, size;
-            iss >> x >> y >> size;
-            addObstacle(Obstacle({x, y}, size));
+                if (iss >> x >> y >> size) {
+                    addObstacle(Obstacle({x, y}, size));
+                } else {
+                    std::cerr << "Failed to read Obstacle data: " << line << std::endl;
+                }
         }
     }
     file.close();

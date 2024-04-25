@@ -6,19 +6,24 @@
 
 
 SimulationEngine::SimulationEngine(Environment* environment, QObject* parent)
-    : QObject(parent), environment(environment), running(false), timeStep(0.016) {
+    : QObject(parent), environment(environment), running(false), timeStep(0.016), timer(nullptr) {
     startTime = std::chrono::steady_clock::now();
+    lastUpdate = std::chrono::steady_clock::now();
 }
 
 SimulationEngine::~SimulationEngine() {
     stop();
+    delete timer;  // Освобождаем память, выделенную для таймера
 }
 
 void SimulationEngine::start() {
+    if (running) return;  // Предотвращение повторного запуска
     running = true;
-    QTimer* timer = new QTimer(this);
-    connect(timer, &QTimer::timeout, this, &SimulationEngine::update);
-    timer->start(static_cast<int>(timeStep * 1000));  // Запуск таймера с интервалом timeStep
+    if (!timer) {
+        timer = new QTimer(this);  // Создаем таймер, если он еще не создан
+        connect(timer, &QTimer::timeout, this, &SimulationEngine::update);
+    }
+    timer->start(static_cast<int>(timeStep * 1000));  // Перезапускаем таймер
 }
 
 
@@ -33,17 +38,39 @@ void SimulationEngine::resume() {
 
 void SimulationEngine::stop() {
     running = false;
+    if (timer) {
+        timer->stop();  // Останавливаем таймер
+    }
 }
 
 void SimulationEngine::update() {
+    std::cout << "Update called" << std::endl;
     if (!running) return;
-    // Обновление логики симуляции
+
+    double maxWidth = environment->width;
+    double maxHeight = environment->height;
+    auto now = std::chrono::steady_clock::now();
+    double elapsedMilliseconds = std::chrono::duration_cast<std::chrono::milliseconds>(now - lastUpdate).count();
+
+    if (elapsedMilliseconds < timeStep * 1000) {
+        return; // Если с последнего обновления прошло меньше времени, чем заданный шаг в миллисекундах, то выходим из функции
+    }
+
+    for (auto& robot : environment->getRobots()) {
+        robot->move(maxWidth, maxHeight);
+        if (environment->checkCollisions(robot)) {  // Проверка на столкновения
+            // Дополнительные действия после столкновения, если необходимо
+        }
+    }
+
+    emit updateGUI();
     if (checkEndConditions()) {
         emit simulationEnded();
-        QTimer::singleShot(0, this, [&]() { running = false; });  // Останавливаем обновление
+        QTimer::singleShot(0, this, [&]() { running = false; });
     } else {
         QTimer::singleShot(static_cast<int>(timeStep * 1000), this, &SimulationEngine::update);
     }
+    lastUpdate = now;
 }
 
 bool SimulationEngine::checkEndConditions() {

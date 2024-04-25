@@ -7,6 +7,7 @@
 #include "Environment.h"
 #include <QTimer>
 #include <QWidget>
+#include "RemoteControlledRobot.h"
 
 
 class GUI : public QMainWindow {
@@ -28,14 +29,17 @@ private:
     QTimer *updateTimer;
     SimulationEngine* simulationEngine;
     Environment* environment;
+    RemoteControlledRobot* remoteControlledRobot;
 
     void setupUI();
     void connectSignals();
-    
+
 protected:
-    void paintEvent(QPaintEvent *event) override; // Переопределение метода paintEvent
+    void initializeScene();
+    void keyPressEvent(QKeyEvent *event) override;
 
 private slots:
     void onStartClicked();
     void onStopClicked();
+    void redraw();
 };
