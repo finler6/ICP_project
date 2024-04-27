@@ -104,4 +104,22 @@ bool SimulationEngine::checkEndConditions() {
     return false; // Если ни одно из условий не выполнено, продолжаем симуляцию
 }
 
+QList<Robot*> SimulationEngine::getRobots() const {
+    std::vector<Robot*> vec = environment->getRobots();
+    QList<Robot*> list;
+    for (auto robot : vec) {
+        list.append(robot);
+    }
+    return list;
+}
+
+QList<Obstacle*> SimulationEngine::getObstacles() const {
+    std::vector<Obstacle> vec = environment->getObstacles();
+    QList<Obstacle*> list;
+    for (const Obstacle& obstacle : vec) {
+        list.append(new Obstacle(obstacle));  // Creating new pointers from objects
+    }
+    return list;
+}
+
 

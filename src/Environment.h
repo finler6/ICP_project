@@ -1,3 +1,6 @@
+#ifndef ENVIRONMENT_H
+#define ENVIRONMENT_H
+
 #pragma once
 
 #include "Robot.h"
@@ -32,3 +35,4 @@ private:
     bool isCollision(const std::pair<double, double>& pos1, double size1, const std::pair<double, double>& pos2, double size2) const;
 };
 
+#endif // ENVIRONMENT_H

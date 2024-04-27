@@ -12,16 +12,30 @@ SOURCES += src/main.cpp \
            src/RemoteControlledRobot.cpp \
            src/Environment.cpp \
            src/Obstacle.cpp \
-           src/GUI.cpp \
            src/SimulationEngine.cpp \
-           src/Utilities.cpp
+           src/Utilities.cpp \
+           src/SimulationWindow.cpp \
+           src/SettingsDialog.cpp \
+           src/RobotView.cpp \
+           src/ObstacleView.cpp \
+           src/GuiMain.cpp \
+           src/ControlPanel.cpp \
+           src/MapEditor.cpp \
+           src/LoadEnvironment.cpp
+
 
 HEADERS += src/Robot.h \
            src/AutonomousRobot.h \
            src/RemoteControlledRobot.h \
            src/Environment.h \
            src/Obstacle.h \
-           src/GUI.h \
            src/SimulationEngine.h \
-           src/Utilities.h
-
+           src/Utilities.h \
+           src/SimulationWindow.h \
+           src/SettingsDialog.h \
+           src/RobotView.h \
+           src/ObstacleView.h \
+           src/GuiMain.h \
+           src/ControlPanel.h \
+           src/MapEditor.h \
+           src/LoadEnvironment.h

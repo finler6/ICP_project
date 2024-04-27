@@ -1,14 +1,20 @@
+#ifndef OBSTACLE_H
+#define OBSTACLE_H
 #pragma once
-#include <utility>  // For std::pair
+#include <QRectF>
+#include <utility>
 
 class Obstacle {
 public:
     Obstacle(std::pair<double, double> position, double size);
-    
     std::pair<double, double> getPosition() const;
     double getSize() const;
+    QRectF getBounds() const;
 
 private:
-    std::pair<double, double> position;  // Координаты центра препятствия (x, y)
-    double size;  // Размер препятствия (может быть интерпретирован как радиус, если препятствие круглое)
+    std::pair<double, double> position;
+    double size; // Assuming size is the diameter or edge length if the shape is square
 };
+
+#endif // OBSTACLE_H
+
