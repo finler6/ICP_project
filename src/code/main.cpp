@@ -2,12 +2,17 @@
 #include "gui/GuiMain.h"
 #include "Environment.h"
 #include "SimulationEngine.h"
+#include "ConfigManager.h"
+#include <QString>
+#include <string>
 
 int main(int argc, char *argv[]) {
     QApplication app(argc, argv);
-    
+    ConfigManager::setConfigPath("examples/example1.txt");
     Environment env; // Assuming Environment handles configurations itself or via a method
-    env.loadConfiguration("examples/example1.txt"); // Load configuration for the simulation
+    QString qPath = ConfigManager::getConfigPath();  // Получаем путь как QString
+    std::string path = qPath.toStdString();
+    env.loadConfiguration(path); // Load configuration for the simulation
 
     SimulationEngine *simulationEngine = new SimulationEngine(&env); // Create the simulation engine with the environment
 

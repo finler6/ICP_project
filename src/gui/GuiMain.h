@@ -8,6 +8,8 @@
 #include "code/SimulationEngine.h"
 #include <QDockWidget>
 #include "LoadEnvironment.h"
+#include "MapEditor.h"
+
 
 class GuiMain : public QMainWindow {
     Q_OBJECT
@@ -24,6 +26,8 @@ private:
     SettingsDialog *settingsDialog;
     SimulationEngine* engine;
     LoadEnvironment* loadNew;
+    MapEditor *mapEditor;
+
 
 public slots:
     void openSettingsDialog();  // Slot to handle settings dialog opening

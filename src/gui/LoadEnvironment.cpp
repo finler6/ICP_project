@@ -1,4 +1,5 @@
 #include "LoadEnvironment.h"
+#include "code/ConfigManager.h"
 #include "code/AutonomousRobot.h"
 #include "code/RemoteControlledRobot.h"
 #include "code/Obstacle.h"
@@ -86,6 +87,7 @@ void LoadEnvironment::loadNewConfiguration() {
     file.close();
 
     if (success) {
+        ConfigManager::setConfigPath(filePath);
     } else {
         // При ошибке загрузки восстанавливаем стандартную конфигурацию
         environment->loadConfiguration("examples/example1.txt");

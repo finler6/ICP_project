@@ -1,13 +1,21 @@
 #ifndef SIMULATIONWINDOW_H
 #define SIMULATIONWINDOW_H
 
+#include <QDebug>
 #include <QWidget>
 #include <QGraphicsView>
 #include <QGraphicsScene>
 #include <QVBoxLayout>
+#include <QContextMenuEvent>
+#include <QTextStream>
+#include <QMenu>
+#include <QAction>
 #include "code/SimulationEngine.h"
+#include "code/ConfigManager.h"
 #include "RobotView.h"
 #include "ObstacleView.h"
+#include "RobotDialog.h"
+#include "ObstacleDialog.h"
 
 class SimulationWindow : public QWidget {
     Q_OBJECT
@@ -21,15 +29,27 @@ public:
     void continueSimulation();
     void stopSimulation();
 
+protected:
+    void contextMenuEvent(QContextMenuEvent *event) override;
+
 private:
     QGraphicsView *view;
     QGraphicsScene *scene;
+    QPointF clickPosition;
     SimulationEngine *engine;
     QMap<int, RobotView*> robotViews;
     QMap<int, ObstacleView*> obstacleViews;
+    QString lastAddedType; // "Robot" или "Obstacle"
+    QString lastRobotType; // Тип робота: "autonomous" или "remote"
+    int lastAddedId;
+    double lastAddedX, lastAddedY;
+    double lastAddedParam1, lastAddedParam2, lastAddedParam3;
 
 private slots:
     void onGuiUpdate();
+    void addRobot();
+    void addObstacle();
+    void saveConfiguration();
 };
 
 #endif // SIMULATIONWINDOW_H

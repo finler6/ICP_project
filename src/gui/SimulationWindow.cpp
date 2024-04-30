@@ -1,6 +1,4 @@
 #include "SimulationWindow.h"
-#include "RobotView.h"
-#include "ObstacleView.h"
 
 SimulationWindow::SimulationWindow(SimulationEngine *engine, QWidget *parent)
     : QWidget(parent), engine(engine) {
@@ -16,6 +14,86 @@ SimulationWindow::SimulationWindow(SimulationEngine *engine, QWidget *parent)
     initializeScene();
     connect(engine, &SimulationEngine::updateGUI, this, &SimulationWindow::updateScene);
 }
+
+void SimulationWindow::contextMenuEvent(QContextMenuEvent *event) {
+    clickPosition = view->mapToScene(event->pos());
+    QMenu menu;
+    menu.addAction("Add Robot", this, &SimulationWindow::addRobot);
+    menu.addAction("Add Obstacle", this, &SimulationWindow::addObstacle);
+    menu.exec(event->globalPos());
+}
+
+void SimulationWindow::addRobot() {
+    RobotDialog dialog(this);
+    if (dialog.exec() == QDialog::Accepted) {
+        // Обновление данных последнего добавленного робота
+        lastAddedType = "Robot";
+        lastRobotType = dialog.getType(); // Тип робота, например "autonomous" или "remote"
+        lastAddedId = dialog.getId();
+        lastAddedX = clickPosition.x();
+        lastAddedY = clickPosition.y();
+        lastAddedParam1 = dialog.getSpeed();
+        lastAddedParam2 = dialog.getOrientation();
+        lastAddedParam3 = dialog.getSensorSize();
+
+        // Создание представления робота и добавление его на сцену
+        QGraphicsEllipseItem* robotItem = new QGraphicsEllipseItem(
+            lastAddedX - 10, lastAddedY - 10, 20, 20
+        );
+        robotItem->setBrush(Qt::blue); // Примерное отображение
+        scene->addItem(robotItem);
+
+        // Сохранение изменений
+        saveConfiguration();
+    }
+}
+
+
+void SimulationWindow::addObstacle() {
+    ObstacleDialog dialog(this);
+    if (dialog.exec() == QDialog::Accepted) {
+        // Обновление данных последнего добавленного препятствия
+        lastAddedType = "Obstacle";
+        lastAddedId = dialog.getId();
+        lastAddedX = clickPosition.x();
+        lastAddedY = clickPosition.y();
+        lastAddedParam1 = dialog.getSize(); // Размер препятствия
+
+        // Создание препятствия и добавление его на сцену
+        QGraphicsRectItem* obstacleItem = new QGraphicsRectItem(
+            lastAddedX - lastAddedParam1 / 2, 
+            lastAddedY - lastAddedParam1 / 2, 
+            lastAddedParam1, lastAddedParam1
+        );
+        obstacleItem->setBrush(Qt::green); // Примерное отображение
+        scene->addItem(obstacleItem);
+
+        // Сохранение изменений
+        saveConfiguration();
+    }
+}
+
+
+void SimulationWindow::saveConfiguration() {
+    QFile file(ConfigManager::getConfigPath());
+    if (!file.open(QIODevice::Append | QIODevice::Text)) {
+        qDebug() << "Cannot open file for appending: " << file.errorString();
+        return;
+    }
+
+    QTextStream out(&file);
+    if (lastAddedType == "Robot") {
+        out << "Robot " << lastRobotType << " " << lastAddedId << " "
+            << lastAddedX << " " << lastAddedY << " "
+            << lastAddedParam1 << " " << lastAddedParam2 << " " << lastAddedParam3 << "\n";
+    } else if (lastAddedType == "Obstacle") {
+        out << "Obstacle " << lastAddedId << " " << lastAddedX << " " << lastAddedY << " " << lastAddedParam1 << "\n";
+    }
+
+    file.close();
+}
+
+
 
 void SimulationWindow::onGuiUpdate() {
     updateScene();  // Вызываем метод обновления сцены

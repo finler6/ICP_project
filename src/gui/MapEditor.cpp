@@ -1,48 +1,69 @@
 // MapEditor.cpp
 #include "MapEditor.h"
-#include <QVBoxLayout>
+#include <QTextStream>
+#include <QFile>
 
-MapEditor::MapEditor(QWidget *parent) : QWidget(parent) {
-    scene = new QGraphicsScene(this);
-    view = new QGraphicsView(scene, this);
-
-    // Настройка панели инструментов
-    toolbar = new QToolBar(this);
-    addButton = new QPushButton(tr("Добавить"), this);
-    removeButton = new QPushButton(tr("Удалить"), this);
-    toolbar->addWidget(addButton);
-    toolbar->addWidget(removeButton);
-
-    // Слоты для кнопок
-    connect(addButton, &QPushButton::clicked, this, &MapEditor::addObject);
-    connect(removeButton, &QPushButton::clicked, this, &MapEditor::removeObject);
-
-    QVBoxLayout *layout = new QVBoxLayout(this);
-    layout->addWidget(toolbar);
-    layout->addWidget(view);
-    setLayout(layout);
-
-    // TODO: Реализация функционала выбора инструмента
+MapEditor::MapEditor(QWidget *parent) : QGraphicsView(parent) {
+    setScene(new QGraphicsScene(this));
+    scene()->setSceneRect(0, 0, 800, 600);
 }
 
-void MapEditor::selectTool() {
-    // TODO: Реализовать логику выбора инструмента для добавления или удаления объектов
+void MapEditor::contextMenuEvent(QContextMenuEvent *event) {
+    clickPosition = mapToScene(event->pos());
+    QMenu menu(this);
+    menu.addAction("Add Robot", this, &MapEditor::addRobot);
+    menu.addAction("Add Obstacle", this, &MapEditor::addObstacle);
+    menu.exec(event->globalPos());
 }
+void MapEditor::addRobot() {
+    RobotDialog dialog(this);
+    if (dialog.exec() == QDialog::Accepted) {
+        lastRobotType = dialog.getType();
+        lastRobotId = dialog.getId();
+        lastRobotPosition = clickPosition;
+        lastRobotSpeed = dialog.getSpeed();
+        lastRobotOrientation = dialog.getOrientation();
+        lastRobotSensorSize = dialog.getSensorSize();
 
-void MapEditor::addObject() {
-    // Пример добавления прямоугольника на сцену
-    QGraphicsRectItem *rect = new QGraphicsRectItem(QRectF(0, 0, 100, 100));
-    rect->setBrush(QBrush(Qt::blue));
-    scene->addItem(rect);
-    currentItem = rect;
-    // TODO: Реализовать добавление различных типов объектов в зависимости от выбранного инструмента
-}
-
-void MapEditor::removeObject() {
-    if (currentItem) {
-        scene->removeItem(currentItem);
-        delete currentItem;
-        currentItem = nullptr;
+        RobotView *robotView = new RobotView();
+        robotView->setPosition(lastRobotPosition);
+        robotView->setOrientation(lastRobotOrientation);
+        scene()->addItem(robotView);
+        saveConfiguration();
     }
-    // TODO: Улучшить удаление объектов, возможно, добавить подтверждение перед удалением
+}
+
+void MapEditor::addObstacle() {
+    ObstacleDialog dialog(this);
+    if (dialog.exec() == QDialog::Accepted) {
+        lastObstacleId = dialog.getId();
+        lastObstaclePosition = clickPosition;
+        lastObstacleSize = dialog.getSize();
+
+        QRectF bounds(lastObstaclePosition.x() - lastObstacleSize/2, lastObstaclePosition.y() - lastObstacleSize/2, lastObstacleSize, lastObstacleSize);
+        ObstacleView *obstacleView = new ObstacleView(bounds);
+        scene()->addItem(obstacleView);
+        saveConfiguration();
+    }
+}
+
+
+void MapEditor::saveConfiguration() {
+    QFile file(ConfigManager::getConfigPath());
+    if (!file.open(QIODevice::WriteOnly | QIODevice::Append | QIODevice::Text))
+        return;
+
+    QTextStream out(&file);
+    // Запись данных робота
+    out << "Robot " << lastRobotType << " " << lastRobotId << " "
+        << lastRobotPosition.x() << " " << lastRobotPosition.y() << " "
+        << lastRobotSpeed << " " << lastRobotOrientation << " "
+        << lastRobotSensorSize << "\n";
+
+    // Запись данных препятствия
+    out << "Obstacle " << lastObstacleId << " "
+        << lastObstaclePosition.x() << " " << lastObstaclePosition.y() << " "
+        << lastObstacleSize << "\n";
+
+    file.close();
 }
