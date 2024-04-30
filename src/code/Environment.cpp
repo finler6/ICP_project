@@ -7,8 +7,11 @@
 Environment::Environment() {}
 
 Environment::~Environment() {
-    clear();
+    for (auto robot : robots) {
+        delete robot;  // Освобождение памяти
+    }
 }
+
 
 void Environment::addRobot(Robot* robot) {
     robots.push_back(robot);

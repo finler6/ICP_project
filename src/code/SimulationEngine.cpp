@@ -122,4 +122,25 @@ QList<Obstacle*> SimulationEngine::getObstacles() const {
     return list;
 }
 
+void SimulationEngine::addRobot(const QString& type, int id, const QPointF& position, double speed, double orientation, double sensorSize) {
+    Robot* robot = nullptr;
+    if (type == "autonomous") {
+        robot = new AutonomousRobot(id, std::make_pair(position.x(), position.y()), speed, orientation, sensorSize);
+    } else if (type == "remote") {
+        robot = new RemoteControlledRobot(id, std::make_pair(position.x(), position.y()), speed, orientation, sensorSize);
+    }
+
+    if (robot) {
+        environment->addRobot(robot);
+    }
+}
+
+
+
+void SimulationEngine::addObstacle(int id, const QPointF& position, double size) {
+    Obstacle obstacle(id, std::make_pair(position.x(), position.y()), size);
+    environment->addObstacle(obstacle);
+}
+
+
 

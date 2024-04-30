@@ -6,6 +6,7 @@
 #include "Robot.h"
 #include "Obstacle.h"
 #include <vector>
+#include <memory>
 #include <utility>  // Для std::pair
 #include <string>
 #include <fstream>

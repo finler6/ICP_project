@@ -4,12 +4,15 @@
 #include <QObject>
 #include <QList>
 #include <vector>
+#include <memory>
 #include <algorithm>
 #include <QTimer>
 #include <chrono>
 #include "Environment.h"
 #include "Robot.h"      // Ensure these are correctly included
 #include "Obstacle.h"   // Ensure these are correctly included
+#include "AutonomousRobot.h"
+#include "RemoteControlledRobot.h"
 
 class SimulationEngine : public QObject {
     Q_OBJECT
@@ -27,6 +30,8 @@ public:
     QList<Robot*> getRobots() const;
     QList<Obstacle*> getObstacles() const;
     Environment* getEnvironment() const { return environment; }
+    void addRobot(const QString &type, int id, const QPointF &position, double speed, double orientation, double sensorSize);
+    void addObstacle(int id, const QPointF &position, double size);
 
 signals:
     void simulationEnded();
@@ -39,6 +44,8 @@ private:
     std::chrono::steady_clock::time_point startTime;
     double timeStep;
     QTimer* timer;
+    std::vector<std::unique_ptr<Robot>> robots;
+    std::vector<Obstacle> obstacles;
 };
 
 #endif // SIMULATIONENGINE_H

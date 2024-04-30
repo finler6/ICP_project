@@ -26,25 +26,23 @@ void SimulationWindow::contextMenuEvent(QContextMenuEvent *event) {
 void SimulationWindow::addRobot() {
     RobotDialog dialog(this);
     if (dialog.exec() == QDialog::Accepted) {
-        // Обновление данных последнего добавленного робота
-        lastAddedType = "Robot";
-        lastRobotType = dialog.getType(); // Тип робота, например "autonomous" или "remote"
-        lastAddedId = dialog.getId();
-        lastAddedX = clickPosition.x();
-        lastAddedY = clickPosition.y();
-        lastAddedParam1 = dialog.getSpeed();
-        lastAddedParam2 = dialog.getOrientation();
-        lastAddedParam3 = dialog.getSensorSize();
+        // Сбор данных из диалога
+        QString type = dialog.getType();
+        int id = dialog.getId();
+        QPointF position = clickPosition;
+        double speed = dialog.getSpeed();
+        double orientation = dialog.getOrientation();
+        double sensorSize = dialog.getSensorSize();
 
-        // Создание представления робота и добавление его на сцену
+        // Передача данных в SimulationEngine, который перенаправляет их в Environment
+        engine->addRobot(type, id, position, speed, orientation, sensorSize);
+
+        // Отображение робота на сцене (опционально, зависит от архитектуры приложения)
         QGraphicsEllipseItem* robotItem = new QGraphicsEllipseItem(
-            lastAddedX - 10, lastAddedY - 10, 20, 20
+            position.x() - 10, position.y() - 10, 20, 20
         );
-        robotItem->setBrush(Qt::blue); // Примерное отображение
+        robotItem->setBrush(Qt::blue);  // Примерная визуализация
         scene->addItem(robotItem);
-
-        // Сохранение изменений
-        saveConfiguration();
     }
 }
 
@@ -52,26 +50,23 @@ void SimulationWindow::addRobot() {
 void SimulationWindow::addObstacle() {
     ObstacleDialog dialog(this);
     if (dialog.exec() == QDialog::Accepted) {
-        // Обновление данных последнего добавленного препятствия
-        lastAddedType = "Obstacle";
-        lastAddedId = dialog.getId();
-        lastAddedX = clickPosition.x();
-        lastAddedY = clickPosition.y();
-        lastAddedParam1 = dialog.getSize(); // Размер препятствия
+        int id = dialog.getId();
+        QPointF position = clickPosition;
+        double size = dialog.getSize();
 
-        // Создание препятствия и добавление его на сцену
+        // Передача данных для создания и добавления препятствия в модель
+        engine->addObstacle(id, position, size);
+
+        // Опционально: отображение препятствия на сцене
         QGraphicsRectItem* obstacleItem = new QGraphicsRectItem(
-            lastAddedX - lastAddedParam1 / 2, 
-            lastAddedY - lastAddedParam1 / 2, 
-            lastAddedParam1, lastAddedParam1
+            position.x() - size / 2, position.y() - size / 2, size, size
         );
-        obstacleItem->setBrush(Qt::green); // Примерное отображение
+        obstacleItem->setBrush(Qt::gray);  // Визуальное представление
         scene->addItem(obstacleItem);
-
-        // Сохранение изменений
-        saveConfiguration();
     }
 }
+
+
 
 
 void SimulationWindow::saveConfiguration() {
