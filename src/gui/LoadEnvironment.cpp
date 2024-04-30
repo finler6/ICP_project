@@ -1,7 +1,7 @@
 #include "LoadEnvironment.h"
-#include "AutonomousRobot.h"
-#include "RemoteControlledRobot.h"
-#include "Obstacle.h"
+#include "code/AutonomousRobot.h"
+#include "code/RemoteControlledRobot.h"
+#include "code/Obstacle.h"
 #include <QFileDialog>
 #include <QTextStream>
 #include <QMessageBox>
@@ -65,13 +65,14 @@ void LoadEnvironment::loadNewConfiguration() {
                     break;
                 }
 
-            } else if (parts[0] == "Obstacle" && parts.count() == 4) {
-                // Порядок данных: "Obstacle X Y Size"
-                double x = parts[1].toDouble();
-                double y = parts[2].toDouble();
-                double size = parts[3].toDouble();
+            } else if (parts[0] == "Obstacle" && parts.count() == 5) {
+                // Порядок данных: "Obstacle id X Y Size"
+                int id = parts[1].toInt();
+                double x = parts[2].toDouble();
+                double y = parts[3].toDouble();
+                double size = parts[4].toDouble();
 
-                Obstacle obstacle(std::make_pair(x, y), size);
+                Obstacle obstacle(id, std::make_pair(x, y), size);
                 environment->addObstacle(obstacle);
 
             } else {

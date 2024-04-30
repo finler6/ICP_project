@@ -28,8 +28,8 @@ SettingsDialog::SettingsDialog(QWidget *parent) : QDialog(parent) {
     connect(removeRobotButton, &QPushButton::clicked, this, &SettingsDialog::removeRobot);
 
     // Создаем таблицу для препятствий
-    obstacleTable = new QTableWidget(0, 3); // 3 столбца для параметров препятствия
-    QStringList obstacleHeaders{"X", "Y", "Размер"};
+    obstacleTable = new QTableWidget(0, 4); // 3 столбца для параметров препятствия
+    QStringList obstacleHeaders{"Id","X", "Y", "Размер"};
     obstacleTable->setHorizontalHeaderLabels(obstacleHeaders);
     obstacleTable->horizontalHeader()->setSectionResizeMode(QHeaderView::Stretch);
     mainLayout->addWidget(new QLabel("Препятствия:"));
@@ -82,9 +82,10 @@ void SettingsDialog::addRobot() {
 void SettingsDialog::addObstacle() {
     int row = obstacleTable->rowCount();
     obstacleTable->insertRow(row);
-    obstacleTable->setItem(row, 0, new QTableWidgetItem("100"));  // X координата
-    obstacleTable->setItem(row, 1, new QTableWidgetItem("100"));  // Y координата
-    obstacleTable->setItem(row, 2, new QTableWidgetItem("10"));  // Размер
+    obstacleTable->setItem(row, 0, new QTableWidgetItem(QString::number(row)));  // X координата
+    obstacleTable->setItem(row, 1, new QTableWidgetItem("100"));  // X координата
+    obstacleTable->setItem(row, 2, new QTableWidgetItem("100"));  // Y координата
+    obstacleTable->setItem(row, 3, new QTableWidgetItem("10"));  // Размер
 }
 
 

@@ -96,9 +96,10 @@ void Environment::loadConfiguration(const std::string& filename) {
                 addRobot(robot);
             }
         } else if (type == "Obstacle") {
+            int id;
             double x, y, size;
-                if (iss >> x >> y >> size) {
-                    addObstacle(Obstacle({x, y}, size));
+                if (iss >> id >> x >> y >> size) {
+                    addObstacle(Obstacle(id, {x, y}, size));
                 } else {
                     std::cerr << "Failed to read Obstacle data: " << line << std::endl;
                 }

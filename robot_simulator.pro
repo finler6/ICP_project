@@ -6,36 +6,36 @@ QT += core gui widgets
 INCLUDEPATH += ./src \
                /usr/include/x86_64-linux-gnu/qt5
 
-SOURCES += src/main.cpp \
-           src/Robot.cpp \
-           src/AutonomousRobot.cpp \
-           src/RemoteControlledRobot.cpp \
-           src/Environment.cpp \
-           src/Obstacle.cpp \
-           src/SimulationEngine.cpp \
-           src/Utilities.cpp \
-           src/SimulationWindow.cpp \
-           src/SettingsDialog.cpp \
-           src/RobotView.cpp \
-           src/ObstacleView.cpp \
-           src/GuiMain.cpp \
-           src/ControlPanel.cpp \
-           src/MapEditor.cpp \
-           src/LoadEnvironment.cpp
+SOURCES += src/code/main.cpp \
+           src/code/Robot.cpp \
+           src/code/AutonomousRobot.cpp \
+           src/code/RemoteControlledRobot.cpp \
+           src/code/Environment.cpp \
+           src/code/Obstacle.cpp \
+           src/code/SimulationEngine.cpp \
+           src/code/Utilities.cpp \
+           src/gui/SimulationWindow.cpp \
+           src/gui/SettingsDialog.cpp \
+           src/gui/RobotView.cpp \
+           src/gui/ObstacleView.cpp \
+           src/gui/GuiMain.cpp \
+           src/gui/ControlPanel.cpp \
+           src/gui/MapEditor.cpp \
+           src/gui/LoadEnvironment.cpp
 
 
-HEADERS += src/Robot.h \
-           src/AutonomousRobot.h \
-           src/RemoteControlledRobot.h \
-           src/Environment.h \
-           src/Obstacle.h \
-           src/SimulationEngine.h \
-           src/Utilities.h \
-           src/SimulationWindow.h \
-           src/SettingsDialog.h \
-           src/RobotView.h \
-           src/ObstacleView.h \
-           src/GuiMain.h \
-           src/ControlPanel.h \
-           src/MapEditor.h \
-           src/LoadEnvironment.h
+HEADERS += src/code/Robot.h \
+           src/code/AutonomousRobot.h \
+           src/code/RemoteControlledRobot.h \
+           src/code/Environment.h \
+           src/code/Obstacle.h \
+           src/code/SimulationEngine.h \
+           src/code/Utilities.h \
+           src/gui/SimulationWindow.h \
+           src/gui/SettingsDialog.h \
+           src/gui/RobotView.h \
+           src/gui/ObstacleView.h \
+           src/gui/GuiMain.h \
+           src/gui/ControlPanel.h \
+           src/gui/MapEditor.h \
+           src/gui/LoadEnvironment.h

@@ -1,5 +1,5 @@
 #include <QApplication>
-#include "GuiMain.h"
+#include "gui/GuiMain.h"
 #include "Environment.h"
 #include "SimulationEngine.h"
 

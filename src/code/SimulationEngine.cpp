@@ -1,7 +1,7 @@
-#include "SimulationEngine.h"
+#include "code/SimulationEngine.h"
 #include <ostream>
 #include <iostream>
-#include "Obstacle.h"
+#include "code/Obstacle.h"
 #include <thread>
 
 

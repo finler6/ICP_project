@@ -5,7 +5,7 @@
 #include "SimulationWindow.h"
 #include "ControlPanel.h"
 #include "SettingsDialog.h"
-#include "SimulationEngine.h"
+#include "code/SimulationEngine.h"
 #include <QDockWidget>
 #include "LoadEnvironment.h"
 

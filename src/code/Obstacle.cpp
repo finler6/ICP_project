@@ -1,9 +1,9 @@
 #include "Obstacle.h"
 #include <iostream>
 
-Obstacle::Obstacle(std::pair<double, double> position, double size)
-    : position(position), size(size) {
-    std::cout << "Obstacle created at (" << position.first << ", " << position.second << ") with size " << size << std::endl;
+Obstacle::Obstacle(int id, std::pair<double, double> position, double size)
+    : id(id), position(position), size(size) {
+    std::cout << "Obstacle created at (" << id << ", " << position.first << ", " << position.second << ") with size " << size << std::endl;
 }
 
 std::pair<double, double> Obstacle::getPosition() const {
@@ -19,4 +19,9 @@ QRectF Obstacle::getBounds() const {
 double Obstacle::getSize() const {
     return size;
 }
+
+int Obstacle::getId() const {
+    return id;
+}
+
 

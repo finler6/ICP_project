@@ -5,7 +5,7 @@
 #include <QGraphicsView>
 #include <QGraphicsScene>
 #include <QVBoxLayout>
-#include "SimulationEngine.h"
+#include "code/SimulationEngine.h"
 #include "RobotView.h"
 #include "ObstacleView.h"
 
