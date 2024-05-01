@@ -6,6 +6,7 @@
 #include <QFileDialog>
 #include <QTextStream>
 #include <QMessageBox>
+#include <QRegularExpression>
 
 LoadEnvironment::LoadEnvironment(Environment* env, QObject* parent)
     : QObject(parent), environment(env) {}
@@ -38,7 +39,7 @@ void LoadEnvironment::loadNewConfiguration() {
 
     while (!in.atEnd()) {
         line = in.readLine();
-        QStringList parts = line.split(QRegExp("\\s+"), Qt::SkipEmptyParts);
+        QStringList parts = line.split(QRegularExpression("\\s+"), Qt::SkipEmptyParts);
 
         if (parts.count() > 1) {
             if (parts[0] == "Robot" && parts.count() >= 7) {

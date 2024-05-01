@@ -1,3 +1,4 @@
+#include <QFile>
 #include "SimulationWindow.h"
 
 SimulationWindow::SimulationWindow(SimulationEngine *engine, QWidget *parent)
