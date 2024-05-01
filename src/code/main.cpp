@@ -8,7 +8,7 @@
 
 int main(int argc, char *argv[]) {
     QApplication app(argc, argv);
-    ConfigManager::setConfigPath("examples/example1.txt");
+    ConfigManager::setConfigPath("examples/TEST_MAIN.txt");
     Environment env; // Assuming Environment handles configurations itself or via a method
     QString qPath = ConfigManager::getConfigPath();  // Получаем путь как QString
     std::string path = qPath.toStdString();

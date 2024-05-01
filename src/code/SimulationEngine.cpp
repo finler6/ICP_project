@@ -44,7 +44,7 @@ void SimulationEngine::stop() {
 }
 
 void SimulationEngine::update() {
-    std::cout << "Update called" << std::endl;
+    //std::cout << "Update called" << std::endl;
     if (!running) return;
 
     double maxWidth = environment->width;
@@ -58,9 +58,7 @@ void SimulationEngine::update() {
 
     for (auto& robot : environment->getRobots()) {
         robot->move(maxWidth, maxHeight);
-        if (environment->checkCollisions(robot)) {  // Проверка на столкновения
-            // Дополнительные действия после столкновения, если необходимо
-        }
+        //environment->checkCollisions(robot);
     }
 
     emit updateGUI();
@@ -122,12 +120,16 @@ QList<Obstacle*> SimulationEngine::getObstacles() const {
     return list;
 }
 
-void SimulationEngine::addRobot(const QString& type, int id, const QPointF& position, double speed, double orientation, double sensorSize) {
+void SimulationEngine::addRobot(const QString& type, int id, const QPointF& position, double speed, double orientation, double sensorRange) {
     Robot* robot = nullptr;
     if (type == "autonomous") {
-        robot = new AutonomousRobot(id, std::make_pair(position.x(), position.y()), speed, orientation, sensorSize);
+        if (!environment) {
+            std::cerr << "SimulationEngine off" << std::endl;
+            return;
+        }
+        robot = new AutonomousRobot(id, std::make_pair(position.x(), position.y()), speed, orientation, sensorRange, environment);
     } else if (type == "remote") {
-        robot = new RemoteControlledRobot(id, std::make_pair(position.x(), position.y()), speed, orientation, sensorSize);
+        robot = new RemoteControlledRobot(id, std::make_pair(position.x(), position.y()), speed, orientation, sensorRange);
     }
 
     if (robot) {

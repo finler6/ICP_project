@@ -35,6 +35,7 @@ void SimulationWindow::addRobot() {
         double orientation = dialog.getOrientation();
         double sensorSize = dialog.getSensorSize();
 
+
         // Передача данных в SimulationEngine, который перенаправляет их в Environment
         engine->addRobot(type, id, position, speed, orientation, sensorSize);
 
@@ -105,6 +106,7 @@ void SimulationWindow::initializeScene() {
         RobotView* robotView = new RobotView();
         robotView->setPosition(QPointF(robot->getPosition().first, robot->getPosition().second));
         robotView->setOrientation(robot->getOrientation());
+        robotView->setSensorRange(robot->getSensorRange());  // Передача диапазона сенсора
         scene->addItem(robotView);
         robotViews.insert(robot->getID(), robotView);
     }

@@ -30,7 +30,7 @@ public:
     QList<Robot*> getRobots() const;
     QList<Obstacle*> getObstacles() const;
     Environment* getEnvironment() const { return environment; }
-    void addRobot(const QString &type, int id, const QPointF &position, double speed, double orientation, double sensorSize);
+    void addRobot(const QString &type, int id, const QPointF &position, double speed, double orientation, double sensorRange);
     void addObstacle(int id, const QPointF &position, double size);
 
 signals:

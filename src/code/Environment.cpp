@@ -20,14 +20,10 @@ std::vector<Robot*>& Environment::getRobots() {
     return robots;
 }
 
-int Environment::getCollisionCount() const {
-    return collisionCount;
-}
-
 void Environment::addObstacle(const Obstacle& obstacle) {
     obstacles.push_back(obstacle);
 }
-
+/*
 void Environment::update() {
     double maxWidth = 800.0; // Пример ширины рабочей области
     double maxHeight = 600.0; // Пример высоты рабочей области
@@ -36,7 +32,7 @@ void Environment::update() {
         robot->move(maxWidth, maxHeight);
         checkCollisions(robot);
     }
-}
+}*/
 
 void Environment::clear() {
     // Удаление всех роботов
@@ -51,7 +47,7 @@ bool Environment::checkCollisions(Robot* robot) {
     // Проверка столкновений робота с каждым препятствием
     bool collisionDetected = false;
     for (const auto& obstacle : obstacles) {
-        if (isCollision(robot->getPosition(), robot->getSize(), obstacle.getPosition(), obstacle.getSize())) {
+        if (isCollision(robot->getPosition(), robot->getRange(), obstacle.getPosition(), obstacle.getSize())) {
             robot->handleCollision(); // Метод для обработки столкновения
             collisionDetected = true;
             break;
@@ -62,10 +58,8 @@ bool Environment::checkCollisions(Robot* robot) {
 
 bool Environment::isCollision(const std::pair<double, double>& pos1, double size1, const std::pair<double, double>& pos2, double size2) const {
     // Вычисление расстояния между центрами кругов
-    double dx = pos1.first - pos2.first;
-    double dy = pos1.second - pos2.second;
-    double distance = sqrt(dx * dx + dy * dy);
-    return distance < (size1 + size2); // Проверка перекрытия кругов
+    double distance = sqrt(pow(pos1.first - pos2.first, 2) + pow(pos1.second - pos2.second, 2));
+    return distance < size1 + size2; // Столкновение произошло, если расстояние меньше суммы радиусов
 }
 
 void Environment::loadConfiguration(const std::string& filename) {
@@ -90,7 +84,7 @@ void Environment::loadConfiguration(const std::string& filename) {
             Robot* robot = nullptr;
 
             if (robotType == "autonomous") {
-                robot = new AutonomousRobot(id, {x, y}, speed, direction, sensor_range);
+                robot = new AutonomousRobot(id, {x, y}, speed, direction, sensor_range, this);
             } else if (robotType == "remote") {
                 robot = new RemoteControlledRobot(id, {x, y}, speed, direction, sensor_range);
             }
