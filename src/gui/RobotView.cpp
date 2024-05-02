@@ -41,6 +41,7 @@ void RobotView::paint(QPainter *painter, const QStyleOptionGraphicsItem *option,
     painter->drawPath(path);
 }
 
+
 void RobotView::setPosition(const QPointF &pos) {
     position = pos;
     setPos(position);

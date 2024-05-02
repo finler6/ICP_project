@@ -58,7 +58,7 @@ void LoadEnvironment::loadNewConfiguration() {
                         std::cerr << "LoadEnvironment off" << std::endl;
                         return;
                     }
-                    robot = new AutonomousRobot(id, std::make_pair(x, y), speed, direction, sensorRange, environment);
+                    robot = new AutonomousRobot(id, std::make_pair(x, y), speed, direction, sensorRange, 800, 600, environment);
                 } else if (robotType == "remote") {
                     robot = new RemoteControlledRobot(id, std::make_pair(x, y), speed, direction, sensorRange);
                 }

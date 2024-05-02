@@ -131,6 +131,7 @@ void SimulationWindow::updateScene() {
         RobotView* robotView = new RobotView();
         robotView->setPosition(QPointF(robot->getPosition().first, robot->getPosition().second));
         robotView->setOrientation(robot->getOrientation());
+        robotView->setSensorRange(robot->getSensorRange());
         scene->addItem(robotView);
         robotViews.insert(robot->getID(), robotView);
     }

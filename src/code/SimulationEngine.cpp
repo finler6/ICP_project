@@ -127,7 +127,7 @@ void SimulationEngine::addRobot(const QString& type, int id, const QPointF& posi
             std::cerr << "SimulationEngine off" << std::endl;
             return;
         }
-        robot = new AutonomousRobot(id, std::make_pair(position.x(), position.y()), speed, orientation, sensorRange, environment);
+        robot = new AutonomousRobot(id, std::make_pair(position.x(), position.y()), speed, orientation, sensorRange, environment->width, environment->height, environment);
     } else if (type == "remote") {
         robot = new RemoteControlledRobot(id, std::make_pair(position.x(), position.y()), speed, orientation, sensorRange);
     }

@@ -84,7 +84,7 @@ void Environment::loadConfiguration(const std::string& filename) {
             Robot* robot = nullptr;
 
             if (robotType == "autonomous") {
-                robot = new AutonomousRobot(id, {x, y}, speed, direction, sensor_range, this);
+                robot = new AutonomousRobot(id, {x, y}, speed, direction, sensor_range, width, height, this);
             } else if (robotType == "remote") {
                 robot = new RemoteControlledRobot(id, {x, y}, speed, direction, sensor_range);
             }
