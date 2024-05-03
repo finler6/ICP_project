@@ -12,4 +12,4 @@ private:
     static QString configPath;
 };
 
-#endif // CONFIGMANAGER_H
+#endif 

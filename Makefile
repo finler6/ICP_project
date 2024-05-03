@@ -64,7 +64,6 @@ SOURCES       = src/code/AutonomousRobot.cpp \
 		src/gui/ControlPanel.cpp \
 		src/gui/GuiMain.cpp \
 		src/gui/LoadEnvironment.cpp \
-		src/gui/MapEditor.cpp \
 		src/gui/ObstacleDialog.cpp \
 		src/gui/ObstacleView.cpp \
 		src/gui/RobotDialog.cpp \
@@ -74,7 +73,6 @@ SOURCES       = src/code/AutonomousRobot.cpp \
 		moc_ControlPanel.cpp \
 		moc_GuiMain.cpp \
 		moc_LoadEnvironment.cpp \
-		moc_MapEditor.cpp \
 		moc_ObstacleDialog.cpp \
 		moc_RobotDialog.cpp \
 		moc_SettingsDialog.cpp \
@@ -91,7 +89,6 @@ OBJECTS       = AutonomousRobot.o \
 		ControlPanel.o \
 		GuiMain.o \
 		LoadEnvironment.o \
-		MapEditor.o \
 		ObstacleDialog.o \
 		ObstacleView.o \
 		RobotDialog.o \
@@ -102,7 +99,6 @@ OBJECTS       = AutonomousRobot.o \
 		moc_ControlPanel.o \
 		moc_GuiMain.o \
 		moc_LoadEnvironment.o \
-		moc_MapEditor.o \
 		moc_ObstacleDialog.o \
 		moc_RobotDialog.o \
 		moc_SettingsDialog.o \
@@ -164,6 +160,7 @@ DIST          = /usr/lib/x86_64-linux-gnu/qt5/mkspecs/features/spec_pre.prf \
 		/usr/lib/x86_64-linux-gnu/qt5/mkspecs/features/qt_config.prf \
 		/usr/lib/x86_64-linux-gnu/qt5/mkspecs/linux-g++/qmake.conf \
 		/usr/lib/x86_64-linux-gnu/qt5/mkspecs/features/spec_post.prf \
+		.qmake.stash \
 		/usr/lib/x86_64-linux-gnu/qt5/mkspecs/features/exclusive_builds.prf \
 		/usr/lib/x86_64-linux-gnu/qt5/mkspecs/features/toolchain.prf \
 		/usr/lib/x86_64-linux-gnu/qt5/mkspecs/features/default_pre.prf \
@@ -194,7 +191,6 @@ DIST          = /usr/lib/x86_64-linux-gnu/qt5/mkspecs/features/spec_pre.prf \
 		src/gui/ControlPanel.h \
 		src/gui/GuiMain.h \
 		src/gui/LoadEnvironment.h \
-		src/gui/MapEditor.h \
 		src/gui/ObstacleDialog.h \
 		src/gui/ObstacleView.h \
 		src/gui/RobotDialog.h \
@@ -212,7 +208,6 @@ DIST          = /usr/lib/x86_64-linux-gnu/qt5/mkspecs/features/spec_pre.prf \
 		src/gui/ControlPanel.cpp \
 		src/gui/GuiMain.cpp \
 		src/gui/LoadEnvironment.cpp \
-		src/gui/MapEditor.cpp \
 		src/gui/ObstacleDialog.cpp \
 		src/gui/ObstacleView.cpp \
 		src/gui/RobotDialog.cpp \
@@ -287,6 +282,7 @@ Makefile: robot_simulator.pro /usr/lib/x86_64-linux-gnu/qt5/mkspecs/linux-g++/qm
 		/usr/lib/x86_64-linux-gnu/qt5/mkspecs/features/qt_config.prf \
 		/usr/lib/x86_64-linux-gnu/qt5/mkspecs/linux-g++/qmake.conf \
 		/usr/lib/x86_64-linux-gnu/qt5/mkspecs/features/spec_post.prf \
+		.qmake.stash \
 		/usr/lib/x86_64-linux-gnu/qt5/mkspecs/features/exclusive_builds.prf \
 		/usr/lib/x86_64-linux-gnu/qt5/mkspecs/features/toolchain.prf \
 		/usr/lib/x86_64-linux-gnu/qt5/mkspecs/features/default_pre.prf \
@@ -365,6 +361,7 @@ Makefile: robot_simulator.pro /usr/lib/x86_64-linux-gnu/qt5/mkspecs/linux-g++/qm
 /usr/lib/x86_64-linux-gnu/qt5/mkspecs/features/qt_config.prf:
 /usr/lib/x86_64-linux-gnu/qt5/mkspecs/linux-g++/qmake.conf:
 /usr/lib/x86_64-linux-gnu/qt5/mkspecs/features/spec_post.prf:
+.qmake.stash:
 /usr/lib/x86_64-linux-gnu/qt5/mkspecs/features/exclusive_builds.prf:
 /usr/lib/x86_64-linux-gnu/qt5/mkspecs/features/toolchain.prf:
 /usr/lib/x86_64-linux-gnu/qt5/mkspecs/features/default_pre.prf:
@@ -400,8 +397,8 @@ distdir: FORCE
 	@test -d $(DISTDIR) || mkdir -p $(DISTDIR)
 	$(COPY_FILE) --parents $(DIST) $(DISTDIR)/
 	$(COPY_FILE) --parents /usr/lib/x86_64-linux-gnu/qt5/mkspecs/features/data/dummy.cpp $(DISTDIR)/
-	$(COPY_FILE) --parents src/code/AutonomousRobot.h src/code/ConfigManager.h src/code/Environment.h src/code/Obstacle.h src/code/RemoteControlledRobot.h src/code/Robot.h src/code/SimulationEngine.h src/code/Utilities.h src/gui/ControlPanel.h src/gui/GuiMain.h src/gui/LoadEnvironment.h src/gui/MapEditor.h src/gui/ObstacleDialog.h src/gui/ObstacleView.h src/gui/RobotDialog.h src/gui/RobotView.h src/gui/SettingsDialog.h src/gui/SimulationWindow.h $(DISTDIR)/
-	$(COPY_FILE) --parents src/code/AutonomousRobot.cpp src/code/ConfigManager.cpp src/code/Environment.cpp src/code/main.cpp src/code/Obstacle.cpp src/code/RemoteControlledRobot.cpp src/code/Robot.cpp src/code/SimulationEngine.cpp src/code/Utilities.cpp src/gui/ControlPanel.cpp src/gui/GuiMain.cpp src/gui/LoadEnvironment.cpp src/gui/MapEditor.cpp src/gui/ObstacleDialog.cpp src/gui/ObstacleView.cpp src/gui/RobotDialog.cpp src/gui/RobotView.cpp src/gui/SettingsDialog.cpp src/gui/SimulationWindow.cpp $(DISTDIR)/
+	$(COPY_FILE) --parents src/code/AutonomousRobot.h src/code/ConfigManager.h src/code/Environment.h src/code/Obstacle.h src/code/RemoteControlledRobot.h src/code/Robot.h src/code/SimulationEngine.h src/code/Utilities.h src/gui/ControlPanel.h src/gui/GuiMain.h src/gui/LoadEnvironment.h src/gui/ObstacleDialog.h src/gui/ObstacleView.h src/gui/RobotDialog.h src/gui/RobotView.h src/gui/SettingsDialog.h src/gui/SimulationWindow.h $(DISTDIR)/
+	$(COPY_FILE) --parents src/code/AutonomousRobot.cpp src/code/ConfigManager.cpp src/code/Environment.cpp src/code/main.cpp src/code/Obstacle.cpp src/code/RemoteControlledRobot.cpp src/code/Robot.cpp src/code/SimulationEngine.cpp src/code/Utilities.cpp src/gui/ControlPanel.cpp src/gui/GuiMain.cpp src/gui/LoadEnvironment.cpp src/gui/ObstacleDialog.cpp src/gui/ObstacleView.cpp src/gui/RobotDialog.cpp src/gui/RobotView.cpp src/gui/SettingsDialog.cpp src/gui/SimulationWindow.cpp $(DISTDIR)/
 
 
 clean: compiler_clean 
@@ -433,9 +430,9 @@ compiler_moc_predefs_clean:
 moc_predefs.h: /usr/lib/x86_64-linux-gnu/qt5/mkspecs/features/data/dummy.cpp
 	g++ -pipe -O2 -std=gnu++1z -Wall -Wextra -dM -E -o moc_predefs.h /usr/lib/x86_64-linux-gnu/qt5/mkspecs/features/data/dummy.cpp
 
-compiler_moc_header_make_all: moc_SimulationEngine.cpp moc_ControlPanel.cpp moc_GuiMain.cpp moc_LoadEnvironment.cpp moc_MapEditor.cpp moc_ObstacleDialog.cpp moc_RobotDialog.cpp moc_SettingsDialog.cpp moc_SimulationWindow.cpp
+compiler_moc_header_make_all: moc_SimulationEngine.cpp moc_ControlPanel.cpp moc_GuiMain.cpp moc_LoadEnvironment.cpp moc_ObstacleDialog.cpp moc_RobotDialog.cpp moc_SettingsDialog.cpp moc_SimulationWindow.cpp
 compiler_moc_header_clean:
-	-$(DEL_FILE) moc_SimulationEngine.cpp moc_ControlPanel.cpp moc_GuiMain.cpp moc_LoadEnvironment.cpp moc_MapEditor.cpp moc_ObstacleDialog.cpp moc_RobotDialog.cpp moc_SettingsDialog.cpp moc_SimulationWindow.cpp
+	-$(DEL_FILE) moc_SimulationEngine.cpp moc_ControlPanel.cpp moc_GuiMain.cpp moc_LoadEnvironment.cpp moc_ObstacleDialog.cpp moc_RobotDialog.cpp moc_SettingsDialog.cpp moc_SimulationWindow.cpp
 moc_SimulationEngine.cpp: src/code/SimulationEngine.h \
 		src/code/Environment.h \
 		src/code/Robot.h \
@@ -467,7 +464,6 @@ moc_GuiMain.cpp: src/gui/GuiMain.h \
 		src/gui/ControlPanel.h \
 		src/gui/SettingsDialog.h \
 		src/gui/LoadEnvironment.h \
-		src/gui/MapEditor.h \
 		moc_predefs.h \
 		/usr/lib/qt5/bin/moc
 	/usr/lib/qt5/bin/moc $(DEFINES) --include /mnt/c/Users/espatie1/ICP_project/moc_predefs.h -I/usr/lib/x86_64-linux-gnu/qt5/mkspecs/linux-g++ -I/mnt/c/Users/espatie1/ICP_project -I/mnt/c/Users/espatie1/ICP_project/src -I/usr/include/x86_64-linux-gnu/qt5 -I/usr/include/x86_64-linux-gnu/qt5/QtWidgets -I/usr/include/x86_64-linux-gnu/qt5/QtGui -I/usr/include/x86_64-linux-gnu/qt5/QtCore -I/usr/include/c++/10 -I/usr/include/x86_64-linux-gnu/c++/10 -I/usr/include/c++/10/backward -I/usr/lib/gcc/x86_64-linux-gnu/10/include -I/usr/local/include -I/usr/include/x86_64-linux-gnu -I/usr/include src/gui/GuiMain.h -o moc_GuiMain.cpp
@@ -479,16 +475,6 @@ moc_LoadEnvironment.cpp: src/gui/LoadEnvironment.h \
 		moc_predefs.h \
 		/usr/lib/qt5/bin/moc
 	/usr/lib/qt5/bin/moc $(DEFINES) --include /mnt/c/Users/espatie1/ICP_project/moc_predefs.h -I/usr/lib/x86_64-linux-gnu/qt5/mkspecs/linux-g++ -I/mnt/c/Users/espatie1/ICP_project -I/mnt/c/Users/espatie1/ICP_project/src -I/usr/include/x86_64-linux-gnu/qt5 -I/usr/include/x86_64-linux-gnu/qt5/QtWidgets -I/usr/include/x86_64-linux-gnu/qt5/QtGui -I/usr/include/x86_64-linux-gnu/qt5/QtCore -I/usr/include/c++/10 -I/usr/include/x86_64-linux-gnu/c++/10 -I/usr/include/c++/10/backward -I/usr/lib/gcc/x86_64-linux-gnu/10/include -I/usr/local/include -I/usr/include/x86_64-linux-gnu -I/usr/include src/gui/LoadEnvironment.h -o moc_LoadEnvironment.cpp
-
-moc_MapEditor.cpp: src/gui/MapEditor.h \
-		src/gui/RobotDialog.h \
-		src/gui/ObstacleDialog.h \
-		src/gui/RobotView.h \
-		src/gui/ObstacleView.h \
-		src/code/ConfigManager.h \
-		moc_predefs.h \
-		/usr/lib/qt5/bin/moc
-	/usr/lib/qt5/bin/moc $(DEFINES) --include /mnt/c/Users/espatie1/ICP_project/moc_predefs.h -I/usr/lib/x86_64-linux-gnu/qt5/mkspecs/linux-g++ -I/mnt/c/Users/espatie1/ICP_project -I/mnt/c/Users/espatie1/ICP_project/src -I/usr/include/x86_64-linux-gnu/qt5 -I/usr/include/x86_64-linux-gnu/qt5/QtWidgets -I/usr/include/x86_64-linux-gnu/qt5/QtGui -I/usr/include/x86_64-linux-gnu/qt5/QtCore -I/usr/include/c++/10 -I/usr/include/x86_64-linux-gnu/c++/10 -I/usr/include/c++/10/backward -I/usr/lib/gcc/x86_64-linux-gnu/10/include -I/usr/local/include -I/usr/include/x86_64-linux-gnu -I/usr/include src/gui/MapEditor.h -o moc_MapEditor.cpp
 
 moc_ObstacleDialog.cpp: src/gui/ObstacleDialog.h \
 		moc_predefs.h \
@@ -568,8 +554,7 @@ main.o: src/code/main.cpp src/gui/GuiMain.h \
 		src/gui/ObstacleDialog.h \
 		src/gui/ControlPanel.h \
 		src/gui/SettingsDialog.h \
-		src/gui/LoadEnvironment.h \
-		src/gui/MapEditor.h
+		src/gui/LoadEnvironment.h
 	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o main.o src/code/main.cpp
 
 Obstacle.o: src/code/Obstacle.cpp src/code/Obstacle.h
@@ -611,8 +596,7 @@ GuiMain.o: src/gui/GuiMain.cpp src/gui/GuiMain.h \
 		src/gui/ObstacleDialog.h \
 		src/gui/ControlPanel.h \
 		src/gui/SettingsDialog.h \
-		src/gui/LoadEnvironment.h \
-		src/gui/MapEditor.h
+		src/gui/LoadEnvironment.h
 	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o GuiMain.o src/gui/GuiMain.cpp
 
 LoadEnvironment.o: src/gui/LoadEnvironment.cpp src/gui/LoadEnvironment.h \
@@ -624,24 +608,28 @@ LoadEnvironment.o: src/gui/LoadEnvironment.cpp src/gui/LoadEnvironment.h \
 		src/code/RemoteControlledRobot.h
 	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o LoadEnvironment.o src/gui/LoadEnvironment.cpp
 
-MapEditor.o: src/gui/MapEditor.cpp src/gui/MapEditor.h \
-		src/gui/RobotDialog.h \
-		src/gui/ObstacleDialog.h \
-		src/gui/RobotView.h \
-		src/gui/ObstacleView.h \
-		src/code/ConfigManager.h
-	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o MapEditor.o src/gui/MapEditor.cpp
-
 ObstacleDialog.o: src/gui/ObstacleDialog.cpp src/gui/ObstacleDialog.h
 	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o ObstacleDialog.o src/gui/ObstacleDialog.cpp
 
-ObstacleView.o: src/gui/ObstacleView.cpp src/gui/ObstacleView.h
+ObstacleView.o: src/gui/ObstacleView.cpp src/gui/ObstacleView.h \
+		src/code/Obstacle.h \
+		src/code/SimulationEngine.h \
+		src/code/Environment.h \
+		src/code/Robot.h \
+		src/code/AutonomousRobot.h \
+		src/code/RemoteControlledRobot.h
 	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o ObstacleView.o src/gui/ObstacleView.cpp
 
 RobotDialog.o: src/gui/RobotDialog.cpp src/gui/RobotDialog.h
 	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o RobotDialog.o src/gui/RobotDialog.cpp
 
-RobotView.o: src/gui/RobotView.cpp src/gui/RobotView.h
+RobotView.o: src/gui/RobotView.cpp src/gui/RobotView.h \
+		src/code/Robot.h \
+		src/code/SimulationEngine.h \
+		src/code/Environment.h \
+		src/code/Obstacle.h \
+		src/code/AutonomousRobot.h \
+		src/code/RemoteControlledRobot.h
 	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o RobotView.o src/gui/RobotView.cpp
 
 SettingsDialog.o: src/gui/SettingsDialog.cpp src/gui/SettingsDialog.h
@@ -672,9 +660,6 @@ moc_GuiMain.o: moc_GuiMain.cpp
 
 moc_LoadEnvironment.o: moc_LoadEnvironment.cpp 
 	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o moc_LoadEnvironment.o moc_LoadEnvironment.cpp
-
-moc_MapEditor.o: moc_MapEditor.cpp 
-	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o moc_MapEditor.o moc_MapEditor.cpp
 
 moc_ObstacleDialog.o: moc_ObstacleDialog.cpp 
 	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o moc_ObstacleDialog.o moc_ObstacleDialog.cpp

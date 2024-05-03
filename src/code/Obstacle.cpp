@@ -11,7 +11,7 @@ std::pair<double, double> Obstacle::getPosition() const {
 }
 
 QRectF Obstacle::getBounds() const {
-    // Assuming the size is the diameter of a circle centered at 'position'
+
     double halfSize = size / 2.0;
     return QRectF(position.first - halfSize, position.second - halfSize, size, size);
 }

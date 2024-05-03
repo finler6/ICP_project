@@ -6,19 +6,18 @@ RemoteControlledRobot::RemoteControlledRobot(int id, std::pair<double, double> p
 
 void RemoteControlledRobot::move(double maxWidth, double maxHeight) {
     if (movingForward) {
-        // Расчет новой позиции на основе текущей скорости и ориентации
         position.first += velocity * cos(orientation * M_PI / 180.0);
         position.second += velocity * sin(orientation * M_PI / 180.0);
     }
 }
 
 void RemoteControlledRobot::rotate(double angle) {
-    orientation += angle;  // Обновление угла ориентации
-    orientation = fmod(orientation, 360.0);  // Удерживаем угол в пределах 0-360 градусов
+    orientation += angle;  
+    orientation = fmod(orientation, 360.0); 
 }
 
 void RemoteControlledRobot::handleCollision() {
-    movingForward = false;  // Остановить движение вперед при столкновении
+    movingForward = false;  
     std::cout << "Moving forward set to: " << movingForward << std::endl;
 }
 

@@ -1,6 +1,6 @@
 #include "ConfigManager.h"
 
-QString ConfigManager::configPath = ""; // Инициализируем с пустой строкой
+QString ConfigManager::configPath = ""; 
 
 void ConfigManager::setConfigPath(const QString& path) {
     configPath = path;

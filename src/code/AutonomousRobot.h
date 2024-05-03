@@ -15,15 +15,13 @@ public:
 private:
     double maxWidth_;
     double maxHeight_;
-    double avoidanceAngle;  // Угол поворота при обнаружении препятствия
-    // Указатель на окружение, в котором находится робот
+    double avoidanceAngle;  
     Environment* environment;
     void rotate(double angle) override;
-    double sensorRange;  // Диапазон сенсор
-    double lastObstacleAngle;  // Угол к последнему обнаруженному препятствию
+    double sensorRange;  
+    double lastObstacleAngle;  
     void updatePosition(double newX, double newY, double maxWidth, double maxHeight);
     bool isEdgeWithinSensorRange(double maxWidth, double maxHeight);
-    bool isWithinSensorRange(const Obstacle& obstacle);
     bool checkBoundary(double x, double y, double maxWidth, double maxHeight);
     void tryMove(double maxWidth, double maxHeight);
     void resolveAlongObstacle(double newX, double newY, double radianOrientation, double maxWidth, double maxHeight);

@@ -2,17 +2,18 @@
 // RobotView.cpp
 #include "RobotView.h"
 
-RobotView::RobotView() : orientation(0), size(20), sensorRange(100) {  // Инициализация по умолчанию
+RobotView::RobotView(SimulationEngine* engine, int id, QGraphicsItem *parent)
+    : orientation(0), size(20), sensorRange(100), engine(engine), id(id) {
     setPosition(QPointF(0, 0));
+    updateRobotView(); 
 }
-
 void RobotView::setSensorRange(double range) {
     sensorRange = range;
     update();
 }
 
 QRectF RobotView::boundingRect() const {
-    return QRectF(-size/2, -size/2, size, size);  // Использование размера для определения границ
+    return QRectF(-size/2, -size/2, size, size);  
 }
 
 void RobotView::paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget) {
@@ -21,25 +22,24 @@ void RobotView::paint(QPainter *painter, const QStyleOptionGraphicsItem *option,
     painter->setBrush(Qt::gray);
     painter->drawEllipse(boundingRect());
 
-    // Отрисовка направления робота
     painter->setPen(Qt::red);
     painter->drawLine(QPointF(0, 0), QPointF(size/2 * cos(orientation * M_PI / 180), size/2 * sin(orientation * M_PI / 180)));
 
-    // Отрисовка сенсорного поля
     QPainterPath path;
     path.moveTo(0, 0);
-    double startAngle = orientation - 30;  // начальный угол сенсора относительно текущего направления
-    double sweepLength = 60;  // угол охвата сенсора
+    double startAngle = orientation - 30;  
+    double sweepLength = 60;  
 
-    // Преобразование углов в формат, используемый QPainter (против часовой стрелки, начиная с 3 часов)
+
     startAngle = -startAngle - sweepLength;
-    QRectF rectangle(-sensorRange, -sensorRange, 2 * sensorRange, 2 * sensorRange);
+    QRectF rectangle(-(sensorRange + 10), -(sensorRange + 10), 2 * (sensorRange + 10), 2 * (sensorRange + 10));
     path.arcTo(rectangle, startAngle, sweepLength);
 
     path.closeSubpath();
-    painter->setBrush(QColor(255, 255, 0, 100));  // Желтый цвет с прозрачностью для визуализации сенсорного поля
+    painter->setBrush(QColor(255, 255, 0, 100));  
     painter->drawPath(path);
 }
+
 
 
 void RobotView::setPosition(const QPointF &pos) {
@@ -48,12 +48,47 @@ void RobotView::setPosition(const QPointF &pos) {
 }
 
 void RobotView::setOrientation(double angle) {
-    orientation = angle;  // Обновление угла ориентации
-    update();             // Перерисовка объекта с новыми данными
+    orientation = angle;  
+    update();             
 }
 
 void RobotView::setSize(double newSize) {
     prepareGeometryChange();
     size = newSize;
     update();
+}
+    void RobotView::setRobot(Robot* robot) {
+        this->robot = robot;
+        this->robotId = robot->getID();
+    }
+
+    int RobotView::getId() const {
+        return robotId;
+    }
+
+    double RobotView::getSpeed() const {
+        return robot->getSpeed();
+    }
+
+    double RobotView::getOrientation() const {
+        return robot->getOrientation();
+    }
+
+    double RobotView::getSensorRange() const {
+        return robot->getSensorRange();
+    } 
+
+    Robot* RobotView::getRobot() const {
+        return robot;
+    }
+
+
+void RobotView::updateRobotView() {
+    Robot* robot = engine->getRobotById(id);
+    if (robot) {
+        auto pos = robot->getPosition(); 
+        setPos(QPointF(pos.first, pos.second)); 
+        setRotation(robot->getOrientation()); 
+
+    }
 }

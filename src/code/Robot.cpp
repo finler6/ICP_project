@@ -1,5 +1,5 @@
 #include "Robot.h"
-#include <cmath> // For trigonometric functions
+#include <cmath> 
 #include <iostream>
 
 Robot::Robot(int id, std::pair<double, double> position, double velocity, double orientation, double sensorRange)
@@ -9,7 +9,9 @@ std::pair<double, double> Robot::getPosition() const {
     return position;
 }
 
-
+double Robot::getSpeed() const {
+    return velocity;
+}
 double Robot::getRange() const {
     return sensorRange;
 }
@@ -19,6 +21,17 @@ double Robot::getOrientation() const {
 }
 
 bool Robot::isTaskCompleted() const {
-    //std::cout << "Robot " << id << " task completed: " << taskCompleted << std::endl;
     return taskCompleted;
+}
+
+void Robot::setSpeed(double speed) {
+    this->velocity = speed;
+}
+
+void Robot::setOrientation(double orientation) {
+    this->orientation = orientation;
+}
+
+void Robot::setSensorSize(double sensorSize) {
+    this->sensorRange = sensorSize;
 }

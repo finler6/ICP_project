@@ -21,6 +21,9 @@ public:
     double getSpeed() const;
     double getOrientation() const;
     double getSensorSize() const;
+    void setInitialValues(double speed, double orientation, double sensorSize);
+    void setInitialPosition(const QPointF &position);
+    void setInitialId(int id);
 
 private:
     QComboBox *typeEdit;

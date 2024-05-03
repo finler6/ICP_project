@@ -16,9 +16,9 @@ signals:
     void pauseSimulation();
     void resumeSimulation();
     void stopSimulation();
-    void continueSimulation();  // Add this signal
-    void openSettings();        // Add this signal
-    void loadnewConfiguration();   // Add this signal
+    void continueSimulation();  
+    void openSettings();       
+    void loadnewConfiguration();   
 
 private:
     QPushButton *startButton;
@@ -29,5 +29,5 @@ private:
     QPushButton *loadButton;
 };
 
-#endif // CONTROLPANEL_H
+#endif 
 

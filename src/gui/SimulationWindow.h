@@ -39,11 +39,12 @@ private:
     SimulationEngine *engine;
     QMap<int, RobotView*> robotViews;
     QMap<int, ObstacleView*> obstacleViews;
-    QString lastAddedType; // "Robot" или "Obstacle"
-    QString lastRobotType; // Тип робота: "autonomous" или "remote"
+    QString lastAddedType; 
+    QString lastRobotType; 
     int lastAddedId;
     double lastAddedX, lastAddedY;
     double lastAddedParam1, lastAddedParam2, lastAddedParam3;
+    void modifyItem(QGraphicsItem* item);
 
 private slots:
     void onGuiUpdate();

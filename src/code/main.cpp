@@ -9,15 +9,15 @@
 int main(int argc, char *argv[]) {
     QApplication app(argc, argv);
     ConfigManager::setConfigPath("examples/example1.txt");
-    Environment env; // Assuming Environment handles configurations itself or via a method
-    QString qPath = ConfigManager::getConfigPath();  // Получаем путь как QString
+    Environment env; 
+    QString qPath = ConfigManager::getConfigPath();  
     std::string path = qPath.toStdString();
-    env.loadConfiguration(path); // Load configuration for the simulation
+    env.loadConfiguration(path); 
 
-    SimulationEngine *simulationEngine = new SimulationEngine(&env); // Create the simulation engine with the environment
+    SimulationEngine *simulationEngine = new SimulationEngine(&env); 
 
-    GuiMain gui(simulationEngine); // Pass the simulation engine to the GUI
-    gui.show(); // Show the main window
+    GuiMain gui(simulationEngine); 
+    gui.show(); 
 
-    return app.exec(); // Start the Qt event loop
+    return app.exec(); 
 }

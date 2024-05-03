@@ -13,17 +13,17 @@ SimulationEngine::SimulationEngine(Environment* environment, QObject* parent)
 
 SimulationEngine::~SimulationEngine() {
     stop();
-    delete timer;  // Освобождаем память, выделенную для таймера
+    delete timer;  
 }
 
 void SimulationEngine::start() {
-    if (running) return;  // Предотвращение повторного запуска
+    if (running) return;  
     running = true;
     if (!timer) {
-        timer = new QTimer(this);  // Создаем таймер, если он еще не создан
+        timer = new QTimer(this);  
         connect(timer, &QTimer::timeout, this, &SimulationEngine::update);
     }
-    timer->start(static_cast<int>(timeStep * 1000));  // Перезапускаем таймер
+    timer->start(static_cast<int>(timeStep * 1000));  
 }
 
 
@@ -39,12 +39,11 @@ void SimulationEngine::resume() {
 void SimulationEngine::stop() {
     running = false;
     if (timer) {
-        timer->stop();  // Останавливаем таймер
+        timer->stop();  
     }
 }
 
 void SimulationEngine::update() {
-    //std::cout << "Update called" << std::endl;
     if (!running) return;
 
     double maxWidth = environment->width;
@@ -53,12 +52,11 @@ void SimulationEngine::update() {
     double elapsedMilliseconds = std::chrono::duration_cast<std::chrono::milliseconds>(now - lastUpdate).count();
 
     if (elapsedMilliseconds < timeStep * 1000) {
-        return; // Если с последнего обновления прошло меньше времени, чем заданный шаг в миллисекундах, то выходим из функции
+        return; 
     }
 
     for (auto& robot : environment->getRobots()) {
         robot->move(maxWidth, maxHeight);
-        //environment->checkCollisions(robot);
     }
 
     emit updateGUI();
@@ -72,18 +70,18 @@ void SimulationEngine::update() {
 }
 
 bool SimulationEngine::checkEndConditions() {
-    // Проверяем временные ограничения (например, симуляция длится не более 30 минут)
+    
     auto currentTime = std::chrono::steady_clock::now();
-    std::chrono::duration<double> duration = currentTime - startTime; // startTime должен быть определен в классе и установлен при запуске симуляции
-    if (duration.count() > 1800.0) { // 1800 секунд = 30 минут
+    std::chrono::duration<double> duration = currentTime - startTime; 
+    if (duration.count() > 1800.0) { 
         std::cout << "Simulation ended due to time limit." << std::endl;
         return true;
     }
 
-    // Проверяем выполнение задач роботами (например, все роботы достигли целевых точек)
+    
     bool allTasksCompleted = true;
-    for (auto& robot : environment->getRobots()) { // Предполагаем, что у класса Environment есть метод getRobots, возвращающий список всех роботов
-        if (!robot->isTaskCompleted()) { // Предполагаем, что у класса Robot есть метод isTaskCompleted, определяющий, выполнена ли его задача
+    for (auto& robot : environment->getRobots()) { 
+        if (!robot->isTaskCompleted()) {
             allTasksCompleted = false;
             return false;
         }
@@ -93,13 +91,13 @@ bool SimulationEngine::checkEndConditions() {
         return true;
     }
 
-    // Проверяем наличие слишком многих столкновений, если это важно для симуляции
-    if (environment->getCollisionCount() > 50) { // Предполагаем, что у класса Environment есть метод getCollisionCount
+    
+    if (environment->getCollisionCount() > 50) { 
         std::cout << "Simulation ended due to excessive collisions." << std::endl;
         return true;
     }
 
-    return false; // Если ни одно из условий не выполнено, продолжаем симуляцию
+    return false; 
 }
 
 QList<Robot*> SimulationEngine::getRobots() const {
@@ -115,7 +113,7 @@ QList<Obstacle*> SimulationEngine::getObstacles() const {
     std::vector<Obstacle> vec = environment->getObstacles();
     QList<Obstacle*> list;
     for (const Obstacle& obstacle : vec) {
-        list.append(new Obstacle(obstacle));  // Creating new pointers from objects
+        list.append(new Obstacle(obstacle));  
     }
     return list;
 }
@@ -143,6 +141,53 @@ void SimulationEngine::addObstacle(int id, const QPointF& position, double size)
     Obstacle obstacle(id, std::make_pair(position.x(), position.y()), size);
     environment->addObstacle(obstacle);
 }
+
+void SimulationEngine::updateRobot(int id, double speed, double orientation, double sensorSize) {
+    Robot* robot = findRobotById(id);
+    if (robot) {
+        robot->setSpeed(speed);
+        robot->setOrientation(orientation);
+        robot->setSensorSize(sensorSize);
+    }
+}
+
+
+Robot* SimulationEngine::findRobotById(int id) {
+    for (auto& robot : robots) { 
+        if (robot->getID() == id) {
+            return robot.get(); 
+        }
+    }
+    return nullptr; 
+}
+
+
+Robot* SimulationEngine::getRobotById(int id) {
+    return findRobotById(id); 
+}
+
+void SimulationEngine::updateObstacle(int id, double size) {
+    for (auto& obstacle : obstacles) {
+        if (obstacle.getId() == id) {
+            obstacle.setSize(size);
+            return;
+        }
+    }
+}
+Obstacle* SimulationEngine::getObstacleById(int id) {
+    return findObstacleById(id);
+}
+
+Obstacle* SimulationEngine::findObstacleById(int id) {
+    for (auto& obstacle : obstacles) {
+        if (obstacle.getId() == id) {
+            return &obstacle;
+        }
+    }
+    return nullptr;
+}
+
+
 
 
 

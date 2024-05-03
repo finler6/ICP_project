@@ -7,12 +7,10 @@ public:
     void move(double maxWidth, double maxHeight) override;
     void rotate(double angle) override;
     void handleCollision() override;
-
-    // Дополнительные методы для управления роботом
     void setMoveForward(bool move);
     void setRotateDirection(double angle);
 
 private:
-    bool movingForward;  // Флаг для контроля движения вперед
-    double rotateDirection;  // Угол поворота (положительный для поворота по часовой стрелке, отрицательный - против)
+    bool movingForward;  
+    double rotateDirection;  
 };

@@ -32,7 +32,7 @@ void GuiMain::setupConnections() {
 }
 
 void GuiMain::openSettingsDialog() {
-    settingsDialog->show();  // Show the settings dialog
+    settingsDialog->show();  
 }
 
 void GuiMain::startSimulation() {

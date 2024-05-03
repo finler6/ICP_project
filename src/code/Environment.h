@@ -7,7 +7,7 @@
 #include "Obstacle.h"
 #include <vector>
 #include <memory>
-#include <utility>  // Для std::pair
+#include <utility>  
 #include <string>
 #include <fstream>
 #include <sstream>
@@ -15,10 +15,10 @@
 
 class Environment {
 public:
-    double width = 800.0;  // ширина рабочей зоны
-    double height = 600.0; // высота рабочей зоны
-    Environment();  // Конструктор
-    ~Environment();  // Деструктор
+    double width = 800.0; 
+    double height = 600.0; 
+    Environment();  
+    ~Environment();  
     std::vector<Robot*>& getRobots();
     void loadConfiguration(const std::string& filename);
     void addRobot(Robot* robot);

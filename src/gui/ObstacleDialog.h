@@ -17,6 +17,7 @@ public:
     int getId() const;
     QPointF getPosition() const;
     double getSize() const;
+    void setInitialSize(double size);
 
 private:
     QLineEdit *idEdit;
@@ -25,4 +26,4 @@ private:
     QLineEdit *sizeEdit;
 };
 
-#endif // OBSTACLEDIALOG_H
+#endif 

@@ -17,33 +17,42 @@ SimulationWindow::SimulationWindow(SimulationEngine *engine, QWidget *parent)
 }
 
 void SimulationWindow::contextMenuEvent(QContextMenuEvent *event) {
+    QPointF scenePoint = view->mapToScene(event->pos());
+    QGraphicsItem* item = scene->itemAt(scenePoint, QTransform());
     clickPosition = view->mapToScene(event->pos());
+
     QMenu menu;
-    menu.addAction("Add Robot", this, &SimulationWindow::addRobot);
-    menu.addAction("Add Obstacle", this, &SimulationWindow::addObstacle);
+
+    if (item) {
+        QAction* removeAction = menu.addAction("Delete Object");
+        QAction* modifyAction = menu.addAction("Edit Object");
+        connect(removeAction, &QAction::triggered, [this, item]() { scene->removeItem(item); });
+        connect(modifyAction, &QAction::triggered, [this, item]() { modifyItem(item); });
+    } else {
+        QAction* addRobotAction = menu.addAction("Add Robot");
+        QAction* addObstacleAction = menu.addAction("Add Obstacle");
+        connect(addRobotAction, &QAction::triggered, this, &SimulationWindow::addRobot);
+        connect(addObstacleAction, &QAction::triggered, this, &SimulationWindow::addObstacle);
+    }
     menu.exec(event->globalPos());
+    scene->update();
 }
+
 
 void SimulationWindow::addRobot() {
     RobotDialog dialog(this);
     if (dialog.exec() == QDialog::Accepted) {
-        // Сбор данных из диалога
         QString type = dialog.getType();
         int id = dialog.getId();
         QPointF position = clickPosition;
         double speed = dialog.getSpeed();
         double orientation = dialog.getOrientation();
         double sensorSize = dialog.getSensorSize();
-
-
-        // Передача данных в SimulationEngine, который перенаправляет их в Environment
         engine->addRobot(type, id, position, speed, orientation, sensorSize);
-
-        // Отображение робота на сцене (опционально, зависит от архитектуры приложения)
         QGraphicsEllipseItem* robotItem = new QGraphicsEllipseItem(
             position.x() - 10, position.y() - 10, 20, 20
         );
-        robotItem->setBrush(Qt::blue);  // Примерная визуализация
+        robotItem->setBrush(Qt::blue);  
         scene->addItem(robotItem);
     }
 }
@@ -56,18 +65,34 @@ void SimulationWindow::addObstacle() {
         QPointF position = clickPosition;
         double size = dialog.getSize();
 
-        // Передача данных для создания и добавления препятствия в модель
         engine->addObstacle(id, position, size);
 
-        // Опционально: отображение препятствия на сцене
         QGraphicsRectItem* obstacleItem = new QGraphicsRectItem(
             position.x() - size / 2, position.y() - size / 2, size, size
         );
-        obstacleItem->setBrush(Qt::gray);  // Визуальное представление
+        obstacleItem->setBrush(Qt::gray);  
         scene->addItem(obstacleItem);
     }
 }
 
+void SimulationWindow::modifyItem(QGraphicsItem* item) {
+    if (auto robotView = dynamic_cast<RobotView*>(item)) {
+        RobotDialog dialog(this);
+        dialog.setInitialValues(robotView->getSpeed(), robotView->getOrientation(), robotView->getSensorRange());
+        if (dialog.exec() == QDialog::Accepted) {
+            engine->updateRobot(robotView->getId(), dialog.getSpeed(), dialog.getOrientation(), dialog.getSensorSize());
+            robotView->updateRobotView();
+        }
+    } else if (auto obstacleView = dynamic_cast<ObstacleView*>(item)) {
+        ObstacleDialog dialog(this);
+        dialog.setInitialSize(obstacleView->getSize());
+        if (dialog.exec() == QDialog::Accepted) {
+            engine->updateObstacle(obstacleView->getId(), dialog.getSize());
+            obstacleView->updateObstacleView();
+        }
+    }
+    updateScene();
+}
 
 
 
@@ -93,42 +118,39 @@ void SimulationWindow::saveConfiguration() {
 
 
 void SimulationWindow::onGuiUpdate() {
-    updateScene();  // Вызываем метод обновления сцены
+    updateScene();  
 }
 
 void SimulationWindow::initializeScene() {
     scene->clear();
     robotViews.clear();
     obstacleViews.clear();
-
     auto robots = engine->getRobots();
     for (const auto& robot : robots) {
-        RobotView* robotView = new RobotView();
-        robotView->setPosition(QPointF(robot->getPosition().first, robot->getPosition().second));
-        robotView->setOrientation(robot->getOrientation());
-        robotView->setSensorRange(robot->getSensorRange());  // Передача диапазона сенсора
+        RobotView* robotView = new RobotView(engine, robot->getID(), nullptr);
+        robotView->setPos(QPointF(robot->getPosition().first, robot->getPosition().second));
+        robotView->setRotation(robot->getOrientation());
+        robotView->setSensorRange(robot->getSensorRange());
         scene->addItem(robotView);
         robotViews.insert(robot->getID(), robotView);
     }
 
     auto obstacles = engine->getObstacles();
     for (const auto& obstacle : obstacles) {
-        ObstacleView *obstacleView = new ObstacleView(obstacle->getBounds());
+        ObstacleView* obstacleView = new ObstacleView(engine, obstacle->getId(), obstacle->getBounds(), nullptr);
         scene->addItem(obstacleView);
         obstacleViews.insert(obstacle->getId(), obstacleView);
     }
 }
 
-
 void SimulationWindow::updateScene() {
-    scene->clear();  // Полностью очищаем сцену
-    robotViews.clear();  // Очищаем текущие представления роботов
-    obstacleViews.clear();  // Очищаем текущие представления препятствий
+    scene->clear();
+    robotViews.clear();
+    obstacleViews.clear();
 
-    // Пересоздаём представления для всех роботов
     auto robots = engine->getRobots();
     for (const auto& robot : robots) {
-        RobotView* robotView = new RobotView();
+        RobotView* robotView = new RobotView(engine, robot->getID(), nullptr);
         robotView->setPosition(QPointF(robot->getPosition().first, robot->getPosition().second));
         robotView->setOrientation(robot->getOrientation());
         robotView->setSensorRange(robot->getSensorRange());
@@ -136,16 +158,16 @@ void SimulationWindow::updateScene() {
         robotViews.insert(robot->getID(), robotView);
     }
 
-    // Пересоздаём представления для всех препятствий
     auto obstacles = engine->getObstacles();
     for (const auto& obstacle : obstacles) {
-        ObstacleView* obstacleView = new ObstacleView(obstacle->getBounds());
+        ObstacleView* obstacleView = new ObstacleView(engine, obstacle->getId(), obstacle->getBounds(), nullptr);
         scene->addItem(obstacleView);
         obstacleViews.insert(obstacle->getId(), obstacleView);
     }
-
-    scene->update();  // Обновляем сцену для отображения изменений
+    scene->update();
 }
+
+
 
 void SimulationWindow::startSimulation() {
     engine->start();

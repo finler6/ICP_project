@@ -9,53 +9,49 @@
 
 SettingsDialog::SettingsDialog(QWidget *parent) : QDialog(parent) {
     QVBoxLayout *mainLayout = new QVBoxLayout(this);
-    // Создаем таблицу для роботов
-    robotTable = new QTableWidget(0, 7); // 7 столбцов для параметров робота
-    QStringList robotHeaders{"Тип", "ID", "X", "Y", "Скорость", "Направление", "Дальность сенсоров"};
+
+    robotTable = new QTableWidget(0, 7); 
+    QStringList robotHeaders{"Type", "ID", "X", "Y", "Velocity", "Orientation", "Sensor Range"};
     robotTable->setHorizontalHeaderLabels(robotHeaders);
     robotTable->horizontalHeader()->setSectionResizeMode(QHeaderView::Stretch);
-    mainLayout->addWidget(new QLabel("Роботы:"));
+    mainLayout->addWidget(new QLabel("Robots: "));
     mainLayout->addWidget(robotTable);
 
-    // Кнопки для управления списком роботов
     QHBoxLayout *robotButtonsLayout = new QHBoxLayout();
-    addRobotButton = new QPushButton("Добавить робота");
-    removeRobotButton = new QPushButton("Удалить робота");
+    addRobotButton = new QPushButton("Add Robot");
+    removeRobotButton = new QPushButton("Delete Robot");
     robotButtonsLayout->addWidget(addRobotButton);
     robotButtonsLayout->addWidget(removeRobotButton);
     mainLayout->addLayout(robotButtonsLayout);
     connect(addRobotButton, &QPushButton::clicked, this, &SettingsDialog::addRobot);
     connect(removeRobotButton, &QPushButton::clicked, this, &SettingsDialog::removeRobot);
 
-    // Создаем таблицу для препятствий
-    obstacleTable = new QTableWidget(0, 4); // 3 столбца для параметров препятствия
-    QStringList obstacleHeaders{"Id","X", "Y", "Размер"};
+    obstacleTable = new QTableWidget(0, 4); 
+    QStringList obstacleHeaders{"ID","X", "Y", "Size"};
     obstacleTable->setHorizontalHeaderLabels(obstacleHeaders);
     obstacleTable->horizontalHeader()->setSectionResizeMode(QHeaderView::Stretch);
-    mainLayout->addWidget(new QLabel("Препятствия:"));
+    mainLayout->addWidget(new QLabel("Obstacles:"));
     mainLayout->addWidget(obstacleTable);
 
-    // Кнопки для управления списком препятствий
     QHBoxLayout *obstacleButtonsLayout = new QHBoxLayout();
-    addObstacleButton = new QPushButton("Добавить препятствие");
-    removeObstacleButton = new QPushButton("Удалить препятствие");
+    addObstacleButton = new QPushButton("Add Obstacle");
+    removeObstacleButton = new QPushButton("Remove Obstacle");
     obstacleButtonsLayout->addWidget(addObstacleButton);
     obstacleButtonsLayout->addWidget(removeObstacleButton);
     mainLayout->addLayout(obstacleButtonsLayout);
     connect(addObstacleButton, &QPushButton::clicked, this, &SettingsDialog::addObstacle);
     connect(removeObstacleButton, &QPushButton::clicked, this, &SettingsDialog::removeObstacle);
 
-    // Добавляем кнопки для сохранения и отмены
     filenameEdit = new QLineEdit(this);
-    filenameEdit->setPlaceholderText("Введите имя файла");
+    filenameEdit->setPlaceholderText("Enter a filename");
     QHBoxLayout *filenameLayout = new QHBoxLayout();
-    filenameLayout->addWidget(new QLabel("Имя файла:"));
+    filenameLayout->addWidget(new QLabel("Filename:"));
     filenameLayout->addWidget(filenameEdit);
     mainLayout->addLayout(filenameLayout);
 
     QHBoxLayout *saveCancelLayout = new QHBoxLayout();
-    saveButton = new QPushButton("Сохранить");
-    cancelButton = new QPushButton("Отмена");
+    saveButton = new QPushButton("Save");
+    cancelButton = new QPushButton("Cancel");
     saveCancelLayout->addWidget(saveButton);
     saveCancelLayout->addWidget(cancelButton);
     mainLayout->addLayout(saveCancelLayout);
@@ -63,47 +59,46 @@ SettingsDialog::SettingsDialog(QWidget *parent) : QDialog(parent) {
     connect(cancelButton, &QPushButton::clicked, this, &SettingsDialog::reject);
 
     setLayout(mainLayout);
-    setWindowTitle("Настройки симуляции");
+    setWindowTitle("Configuration Editor");
 }
 
 void SettingsDialog::addRobot() {
     int row = robotTable->rowCount();
     robotTable->insertRow(row);
-    // Начальные значения для новой строки, можно адаптировать под свои нужды
-    robotTable->setItem(row, 0, new QTableWidgetItem("autonomous"));  // Тип робота
-    robotTable->setItem(row, 1, new QTableWidgetItem(QString::number(row)));  // ID робота, например
-    robotTable->setItem(row, 2, new QTableWidgetItem("0"));  // X координата
-    robotTable->setItem(row, 3, new QTableWidgetItem("0"));  // Y координата
-    robotTable->setItem(row, 4, new QTableWidgetItem("1.0"));  // Скорость
-    robotTable->setItem(row, 5, new QTableWidgetItem("0"));  // Направление
-    robotTable->setItem(row, 6, new QTableWidgetItem("100"));  // Дальность сенсоров
+    robotTable->setItem(row, 0, new QTableWidgetItem("autonomous"));  
+    robotTable->setItem(row, 1, new QTableWidgetItem(QString::number(row)));  
+    robotTable->setItem(row, 2, new QTableWidgetItem("0"));  
+    robotTable->setItem(row, 3, new QTableWidgetItem("0"));  
+    robotTable->setItem(row, 4, new QTableWidgetItem("1.0"));  
+    robotTable->setItem(row, 5, new QTableWidgetItem("0"));  
+    robotTable->setItem(row, 6, new QTableWidgetItem("100"));  
 }
 
 void SettingsDialog::addObstacle() {
     int row = obstacleTable->rowCount();
     obstacleTable->insertRow(row);
-    obstacleTable->setItem(row, 0, new QTableWidgetItem(QString::number(row)));  // X координата
-    obstacleTable->setItem(row, 1, new QTableWidgetItem("100"));  // X координата
-    obstacleTable->setItem(row, 2, new QTableWidgetItem("100"));  // Y координата
-    obstacleTable->setItem(row, 3, new QTableWidgetItem("10"));  // Размер
+    obstacleTable->setItem(row, 0, new QTableWidgetItem(QString::number(row)));  
+    obstacleTable->setItem(row, 1, new QTableWidgetItem("100"));  
+    obstacleTable->setItem(row, 2, new QTableWidgetItem("100"));  
+    obstacleTable->setItem(row, 3, new QTableWidgetItem("10"));  
 }
 
 
 void SettingsDialog::removeRobot() {
     int row = robotTable->currentRow();
-    if (row >= 0 && QMessageBox::question(this, tr("Удалить робота"), tr("Вы уверены, что хотите удалить этого робота?"), QMessageBox::Yes | QMessageBox::No) == QMessageBox::Yes) {
+    if (row >= 0 && QMessageBox::question(this, tr("Delete Robot"), tr("Are you sure you want to delete this Robot?"), QMessageBox::Yes | QMessageBox::No) == QMessageBox::Yes) {
         robotTable->removeRow(row);
     }
 }
 
 void SettingsDialog::removeObstacle() {
     int row = obstacleTable->currentRow();
-    if (row >= 0 && QMessageBox::question(this, tr("Удалить препятствие"), tr("Вы уверены, что хотите удалить это препятствие?"), QMessageBox::Yes | QMessageBox::No) == QMessageBox::Yes) {
+    if (row >= 0 && QMessageBox::question(this, tr("Delete Obstacle"), tr("Are you sure you want to delete this Obstacle?"), QMessageBox::Yes | QMessageBox::No) == QMessageBox::Yes) {
         obstacleTable->removeRow(row);
     }
 }
 void SettingsDialog::saveSettings() {
-    QString directory = QFileDialog::getExistingDirectory(this, tr("Выберите папку для сохранения"), QDir::homePath());
+    QString directory = QFileDialog::getExistingDirectory(this, tr("Select a folder to save"), QDir::homePath());
     
     if (!directory.isEmpty()) {
         QString filePath = directory + "/" + filenameEdit->text().trimmed() + ".txt";
@@ -111,8 +106,6 @@ void SettingsDialog::saveSettings() {
         
         if (file.open(QIODevice::WriteOnly | QIODevice::Text)) {
             QTextStream out(&file);
-
-            // Сохраняем данные о роботах
             for (int row = 0; row < robotTable->rowCount(); ++row) {
                 out << "Robot";
                 for (int col = 0; col < robotTable->columnCount(); ++col) {
@@ -121,8 +114,6 @@ void SettingsDialog::saveSettings() {
                 }
                 out << "\n";
             }
-
-            // Сохраняем данные о препятствиях
             for (int row = 0; row < obstacleTable->rowCount(); ++row) {
                 out << "Obstacle";
                 for (int col = 0; col < obstacleTable->columnCount(); ++col) {
@@ -133,11 +124,11 @@ void SettingsDialog::saveSettings() {
             }
 
             file.close();
-            QMessageBox::information(this, tr("Файл сохранён"), tr("Файл успешно сохранён в: ") + filePath);
-            accept(); // Закрываем диалог с сохранением
+            QMessageBox::information(this, tr("File saved"), tr("The file was successfully saved in: ") + filePath);
+            accept(); 
         } else {
-            QMessageBox::critical(this, tr("Ошибка сохранения"), tr("Не удалось сохранить файл в: ") + filePath);
-            reject(); // Закрываем диалог без сохранения изменений
+            QMessageBox::critical(this, tr("Save error"), tr("Could not save file to: ") + filePath);
+            reject(); 
         }
     }
 }
@@ -145,5 +136,5 @@ void SettingsDialog::saveSettings() {
 
 
 void SettingsDialog::cancel() {
-    reject(); // Закрываем диалог без сохранения изменений
+    reject(); 
 }

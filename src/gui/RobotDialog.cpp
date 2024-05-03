@@ -12,7 +12,6 @@ RobotDialog::RobotDialog(QWidget *parent) : QDialog(parent) {
     orientationEdit = new QLineEdit(this);
     sensorSizeEdit = new QLineEdit(this);
 
-    // Установка валидаторов
     idEdit->setValidator(new QIntValidator(this));
     xEdit->setValidator(new QDoubleValidator(this));
     yEdit->setValidator(new QDoubleValidator(this));
@@ -20,7 +19,6 @@ RobotDialog::RobotDialog(QWidget *parent) : QDialog(parent) {
     orientationEdit->setValidator(new QDoubleValidator(this));
     sensorSizeEdit->setValidator(new QDoubleValidator(this));
 
-    // Создание меток
     QLabel *typeLabel = new QLabel(tr("Type:"), this);
     QLabel *idLabel = new QLabel(tr("ID:"), this);
     QLabel *xLabel = new QLabel(tr("X Coordinate:"), this);
@@ -70,4 +68,19 @@ double RobotDialog::getOrientation() const {
 
 double RobotDialog::getSensorSize() const {
     return sensorSizeEdit->text().toDouble();
+}
+
+void RobotDialog::setInitialValues(double speed, double orientation, double sensorSize) {
+    speedEdit->setText(QString::number(speed));
+    orientationEdit->setText(QString::number(orientation));
+    sensorSizeEdit->setText(QString::number(sensorSize));
+}
+
+void RobotDialog::setInitialPosition(const QPointF &position) {
+    xEdit->setText(QString::number(position.x()));
+    yEdit->setText(QString::number(position.y()));
+}
+
+void RobotDialog::setInitialId(int id) {
+    idEdit->setText(QString::number(id));
 }
