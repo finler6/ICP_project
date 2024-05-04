@@ -64,6 +64,7 @@ void Environment::loadConfiguration(const std::string& filename) {
                 addRobot(std::make_unique<AutonomousRobot>(id, std::make_pair(x, y), speed, direction, sensor_range, width, height, this));
             } else if (robotType == "remote") {
                 addRobot(std::make_unique<RemoteControlledRobot>(id, std::make_pair(x, y), speed, direction, sensor_range, width, height, this));
+                qDebug() << "Remote robot added with speed: " << speed;
             }
         } else if (type == "Obstacle") {
             int id;

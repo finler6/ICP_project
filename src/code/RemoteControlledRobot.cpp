@@ -1,7 +1,7 @@
 #include "RemoteControlledRobot.h"
 
 RemoteControlledRobot::RemoteControlledRobot(int id, std::pair<double, double> position, double velocity, double orientation, double sensorRange, double maxWidth, double maxHeight, Environment* env)
-        : Robot(id, position, velocity, orientation, sensorRange), avoidanceAngle(orientation), environment(env), currentSpeed(0),movingForward(false), movingBackward(false), turningLeft(false), turningRight(false) {
+        : Robot(id, position, velocity, orientation, sensorRange), avoidanceAngle(orientation), environment(env), currentSpeed(velocity), movingForward(false), movingBackward(false), turningLeft(false), turningRight(false) {
     qDebug() << "RemoteControlledRobot constructor called with orientation: " << orientation;
     qDebug() << "RemoteControlledRobot constructor called with avoidance: " << avoidanceAngle;
     if (!environment) {
@@ -13,6 +13,12 @@ void RemoteControlledRobot::move(double maxWidth, double maxHeight) {
     double radianOrientation = orientation * M_PI / 180.0;
     double newX = position.first + cos(radianOrientation) * currentSpeed;
     double newY = position.second + sin(radianOrientation) * currentSpeed;
+    qDebug() << "Robot ID:" << id << " is moving with speed: " << currentSpeed;
+    qDebug() << "Robot ID:" << id << " is moving to: (" << newX << ", " << newY << ")";
+    qDebug() << "Robot ID:" << id << " is moving with orientation: " << orientation;
+    qDebug() << "Robot ID:" << id << " is moving with avoidance: " << avoidanceAngle;
+    qDebug() << "Robot ID:" << id << " is moving from: (" << position.first << ", " << position.second << ")";
+
 
     bool canMoveX = canMoveTo(newX, position.second, maxWidth, maxHeight);
     bool canMoveY = canMoveTo(position.first, newY, maxWidth, maxHeight);
@@ -40,10 +46,12 @@ void RemoteControlledRobot::handleCollision() {
 void RemoteControlledRobot::processCommand(const QString &command) {
     if (command == "start_move_forward") {
         movingForward = true;
+        qDebug() << "Moving forward";
     } else if (command == "stop_move_forward") {
         movingForward = false;
     } else if (command == "start_move_backward") {
         movingBackward = true;
+        qDebug() << "Moving backward";
     } else if (command == "stop_move_backward") {
         movingBackward = false;
     } else if (command == "start_turn_left") {
@@ -96,6 +104,7 @@ void RemoteControlledRobot::turnRight() {
 void RemoteControlledRobot::updatePosition(double newX, double newY, double maxWidth, double maxHeight) {
     position.first = std::max(0.0, std::min(newX, maxWidth));
     position.second = std::max(0.0, std::min(newY, maxHeight));
+    qDebug() << "Robot ID:" << id << " moved to: (" << position.first << ", " << position.second << ")";
 }
 
 void RemoteControlledRobot::tryMove(double maxWidth, double maxHeight) {

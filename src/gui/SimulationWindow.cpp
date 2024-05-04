@@ -16,7 +16,7 @@ SimulationWindow::SimulationWindow(SimulationEngine *engine, QWidget *parent)
     initializeScene();
     connect(engine, &SimulationEngine::updateGUI, this, &SimulationWindow::updateScene);
     setFocusPolicy(Qt::StrongFocus);
-    setFocus();
+    //setFocus();
 }
 
 void SimulationWindow::contextMenuEvent(QContextMenuEvent *event) {
@@ -64,6 +64,7 @@ void SimulationWindow::contextMenuEvent(QContextMenuEvent *event) {
 }
 
 void SimulationWindow::keyPressEvent(QKeyEvent *event) {
+    this->setFocus();  // Устанавливаем фокус на SimulationWindow
     if (event->isAutoRepeat())  // Игнорируем события автоповтора
         return;
 
@@ -210,7 +211,6 @@ void SimulationWindow::initializeScene() {
         scene->addItem(obstacleView);
         obstacleViews.insert(obstacle->getId(), obstacleView);
     }
-    setFocus();
 }
 
 void SimulationWindow::updateScene() {
@@ -235,28 +235,26 @@ void SimulationWindow::updateScene() {
         obstacleViews.insert(obstacle->getId(), obstacleView);
     }
     scene->update();
-    setFocus();
+    //setfocus
 }
 
 
 
 void SimulationWindow::startSimulation() {
     engine->start();
-    setFocus();
+    this->setFocus();  // Возвращаем фокус на виджет SimulationWindow
 }
 
 void SimulationWindow::pauseSimulation() {
     engine->pause();
-    setFocus();
 }
 
 void SimulationWindow::continueSimulation() {
     engine->resume();
-    setFocus();
+    this->setFocus();  // Возвращаем фокус на виджет SimulationWindow
 }
 
 void SimulationWindow::stopSimulation() {
     engine->stop();
-    setFocus();
 }
 

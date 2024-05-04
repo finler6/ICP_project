@@ -19,7 +19,7 @@
 
 class SimulationWindow : public QWidget {
     Q_OBJECT
-
+    bool keyboardControlActive = false;
 public:
     explicit SimulationWindow(SimulationEngine *engine, QWidget *parent = nullptr);
     void updateScene();
