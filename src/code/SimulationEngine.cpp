@@ -3,7 +3,8 @@
 #include <iostream>
 #include "code/Obstacle.h"
 #include <thread>
-
+#include <memory>
+#include <cmath>
 
 SimulationEngine::SimulationEngine(Environment* environment, QObject* parent)
     : QObject(parent), environment(environment), running(false), timeStep(0.016), timer(nullptr) {
@@ -57,6 +58,10 @@ void SimulationEngine::update() {
 
     for (auto& robot : environment->getRobots()) {
         robot->move(maxWidth, maxHeight);
+        RemoteControlledRobot* rcr = dynamic_cast<RemoteControlledRobot*>(robot.get());
+        if (rcr) {
+            rcr->update();  // Обновляем состояние каждого RemoteControlledRobot
+        }
     }
 
     emit updateGUI();
@@ -119,15 +124,16 @@ std::vector<Obstacle*> SimulationEngine::getObstacles() const {
 
 void SimulationEngine::addRobot(const QString& type, int id, const QPointF& position, double speed, double orientation, double sensorSize) {
     std::unique_ptr<Robot> robot;
+    double maxWidth = 800; // These values should be retrieved or defined properly according to your simulation setup
+    double maxHeight = 600;
     if (type == "autonomous") {
         // Assuming maxWidth and maxHeight are class members or can be obtained somehow
-        double maxWidth = 800; // These values should be retrieved or defined properly according to your simulation setup
-        double maxHeight = 600;
         robot = std::make_unique<AutonomousRobot>(id, std::make_pair(position.x(), position.y()), speed, orientation, sensorSize, maxWidth, maxHeight, environment);
     } else {
-        robot = std::make_unique<RemoteControlledRobot>(id, std::make_pair(position.x(), position.y()), speed, orientation, sensorSize);
+        robot = std::make_unique<RemoteControlledRobot>(id, std::make_pair(position.x(), position.y()), speed, orientation, sensorSize, maxWidth, maxHeight, environment);
     }
-    environment->addRobot(std::move(robot));  // Passing ownership to Environment
+    //robots.push_back(std::move(robot));  // Добавляем в вектор умных указателей
+    environment->addRobot(std::move(robot));  // Передаем владение в Environment
 }
 
 
@@ -206,16 +212,21 @@ void SimulationEngine::removeObstacle(int id) {
     }
 }
 
+void SimulationEngine::sendCommand(const QString &command) {
+    bool commandSent = false;
+    auto remoteRobots = environment->findRemoteControlledRobots();  // Получаем список RemoteControlledRobot
+    qDebug() << "Sending command to all RemoteControlledRobots:" << command;
+    qDebug() << "Total RemoteControlledRobots available:" << remoteRobots.size();
 
+    for (auto& rcr : remoteRobots) {
+        if (rcr) {
+            rcr->processCommand(command);
+            qDebug() << "Command sent to RemoteControlledRobot ID:" << rcr->getID();
+            commandSent = true;
+        }
+    }
 
-
-
-
-
-
-
-
-
-
-
-
+    if (!commandSent) {
+        qDebug() << "No RemoteControlledRobot found to send command:" << command;
+    }
+}

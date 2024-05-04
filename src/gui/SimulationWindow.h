@@ -31,6 +31,8 @@ public:
 
 protected:
     void contextMenuEvent(QContextMenuEvent *event) override;
+    void keyPressEvent(QKeyEvent *event) override;  // Обработчик событий клавиатуры
+    void keyReleaseEvent(QKeyEvent *event) override;  // Обработчик событий клавиатуры
 
 private:
     QGraphicsView *view;
@@ -45,6 +47,9 @@ private:
     double lastAddedX, lastAddedY;
     double lastAddedParam1, lastAddedParam2, lastAddedParam3;
     void modifyItem(QGraphicsItem* item);
+
+    std::vector<std::unique_ptr<Robot>> robots;
+
 
 private slots:
     void onGuiUpdate();

@@ -50,7 +50,7 @@ void LoadEnvironment::loadNewConfiguration() {
                     auto robot = std::make_unique<AutonomousRobot>(id, std::make_pair(x, y), speed, direction, sensorRange, 800, 600, environment);
                     environment->addRobot(std::move(robot));
                 } else if (robotType == "remote") {
-                    auto robot = std::make_unique<RemoteControlledRobot>(id, std::make_pair(x, y), speed, direction, sensorRange);
+                    auto robot = std::make_unique<RemoteControlledRobot>(id, std::make_pair(x, y), speed, direction, sensorRange, 800, 600, environment);
                     environment->addRobot(std::move(robot));
                 }
 

@@ -1,4 +1,5 @@
 #include <QFile>
+#include <QKeyEvent>
 #include "SimulationWindow.h"
 
 SimulationWindow::SimulationWindow(SimulationEngine *engine, QWidget *parent)
@@ -14,6 +15,8 @@ SimulationWindow::SimulationWindow(SimulationEngine *engine, QWidget *parent)
 
     initializeScene();
     connect(engine, &SimulationEngine::updateGUI, this, &SimulationWindow::updateScene);
+    setFocusPolicy(Qt::StrongFocus);
+    setFocus();
 }
 
 void SimulationWindow::contextMenuEvent(QContextMenuEvent *event) {
@@ -58,6 +61,50 @@ void SimulationWindow::contextMenuEvent(QContextMenuEvent *event) {
         connect(addObstacleAction, &QAction::triggered, this, &SimulationWindow::addObstacle);
     }
     menu.exec(event->globalPos());
+}
+
+void SimulationWindow::keyPressEvent(QKeyEvent *event) {
+    if (event->isAutoRepeat())  // Игнорируем события автоповтора
+        return;
+
+    switch (event->key()) {
+        case Qt::Key_Up:
+            engine->sendCommand("start_move_forward");
+            break;
+        case Qt::Key_Down:
+            engine->sendCommand("start_move_backward");
+            break;
+        case Qt::Key_Left:
+            engine->sendCommand("start_turn_left");
+            break;
+        case Qt::Key_Right:
+            engine->sendCommand("start_turn_right");
+            break;
+        default:
+            QWidget::keyPressEvent(event); // Передаем обработку дальше, если клавиша не обработана
+    }
+}
+
+void SimulationWindow::keyReleaseEvent(QKeyEvent *event) {
+    if (event->isAutoRepeat())  // Игнорируем события автоповтора
+        return;
+
+    switch (event->key()) {
+        case Qt::Key_Up:
+            engine->sendCommand("stop_move_forward");
+            break;
+        case Qt::Key_Down:
+            engine->sendCommand("stop_move_backward");
+            break;
+        case Qt::Key_Left:
+            engine->sendCommand("stop_turn_left");
+            break;
+        case Qt::Key_Right:
+            engine->sendCommand("stop_turn_right");
+            break;
+        default:
+            QWidget::keyReleaseEvent(event); // Передаем обработку дальше, если клавиша не обработана
+    }
 }
 
 void SimulationWindow::addRobot() {
@@ -139,7 +186,7 @@ void SimulationWindow::saveConfiguration() {
 
 
 void SimulationWindow::onGuiUpdate() {
-    updateScene();  
+    updateScene();
 }
 
 void SimulationWindow::initializeScene() {
@@ -163,6 +210,7 @@ void SimulationWindow::initializeScene() {
         scene->addItem(obstacleView);
         obstacleViews.insert(obstacle->getId(), obstacleView);
     }
+    setFocus();
 }
 
 void SimulationWindow::updateScene() {
@@ -187,23 +235,28 @@ void SimulationWindow::updateScene() {
         obstacleViews.insert(obstacle->getId(), obstacleView);
     }
     scene->update();
+    setFocus();
 }
 
 
 
 void SimulationWindow::startSimulation() {
     engine->start();
+    setFocus();
 }
 
 void SimulationWindow::pauseSimulation() {
     engine->pause();
+    setFocus();
 }
 
 void SimulationWindow::continueSimulation() {
     engine->resume();
+    setFocus();
 }
 
 void SimulationWindow::stopSimulation() {
     engine->stop();
+    setFocus();
 }
 

@@ -40,7 +40,7 @@ public:
     Obstacle* getObstacleById(int id);
     void removeRobot(int id);
     void removeObstacle(int id);
-
+    void sendCommand(const QString &command);
 
 signals:
     void simulationEnded();

@@ -63,7 +63,7 @@ void Environment::loadConfiguration(const std::string& filename) {
             if (robotType == "autonomous") {
                 addRobot(std::make_unique<AutonomousRobot>(id, std::make_pair(x, y), speed, direction, sensor_range, width, height, this));
             } else if (robotType == "remote") {
-                addRobot(std::make_unique<RemoteControlledRobot>(id, std::make_pair(x, y), speed, direction, sensor_range));
+                addRobot(std::make_unique<RemoteControlledRobot>(id, std::make_pair(x, y), speed, direction, sensor_range, width, height, this));
             }
         } else if (type == "Obstacle") {
             int id;
@@ -104,4 +104,15 @@ bool Environment::removeRobot(int id) {
 
 const std::vector<std::unique_ptr<Obstacle>>& Environment::getObstacles() const {
     return obstacles;
+}
+
+std::vector<RemoteControlledRobot*> Environment::findRemoteControlledRobots() {
+    std::vector<RemoteControlledRobot*> remoteRobots;
+    for (const auto& robot : robots) {
+        RemoteControlledRobot* rcr = dynamic_cast<RemoteControlledRobot*>(robot.get());
+        if (rcr) {
+            remoteRobots.push_back(rcr);
+        }
+    }
+    return remoteRobots;
 }

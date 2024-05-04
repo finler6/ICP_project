@@ -13,6 +13,8 @@
 #include <sstream>
 #include <iostream>
 
+class RemoteControlledRobot;
+
 class Environment {
 public:
     double width = 800.0; 
@@ -30,6 +32,8 @@ public:
     int getCollisionCount() const;
     const std::vector<std::unique_ptr<Obstacle>>& getObstacles() const;
     bool checkCollisions(Robot* robot);
+
+    std::vector<RemoteControlledRobot*> findRemoteControlledRobots();
 
 private:
     int collisionCount;
