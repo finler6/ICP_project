@@ -30,7 +30,7 @@ bool AutonomousRobot::detectObstacle(double maxWidth, double maxHeight) {
         double projectedX = position.first + (sensorRange + robotRadius) * cos(currentAngle);
         double projectedY = position.second + (sensorRange + robotRadius) * sin(currentAngle);
         for (const auto& obstacle : environment->getObstacles()) {
-            QRectF bounds = obstacle.getBounds().adjusted(-robotRadius, -robotRadius, robotRadius, robotRadius);
+            QRectF bounds = obstacle->getBounds().adjusted(-robotRadius, -robotRadius, robotRadius, robotRadius);
             if (lineIntersectsRect(position.first, position.second, projectedX, projectedY, bounds)) {
                 qDebug() << "Robot ID:" << id << " detected an obstacle using sensor at angle: " << angle;
                 return true;
@@ -157,7 +157,7 @@ bool AutonomousRobot::canMoveTo(double x, double y, double maxWidth, double maxH
 bool AutonomousRobot::isObstacleAt(double x, double y) {
     double robotRadius = 10.0; 
     for (const auto& obstacle : environment->getObstacles()) {
-        QRectF bounds = obstacle.getBounds().adjusted(-robotRadius, -robotRadius, robotRadius, robotRadius);
+        QRectF bounds = obstacle->getBounds().adjusted(-robotRadius, -robotRadius, robotRadius, robotRadius);
         if (bounds.contains(x, y)) {
             return true; 
         }

@@ -27,8 +27,8 @@ public:
     void stop();
     void update();
     bool checkEndConditions();
-    QList<Robot*> getRobots() const;
-    QList<Obstacle*> getObstacles() const;
+    std::vector<Robot*> getRobots() const;
+    std::vector<Obstacle*> getObstacles() const;
     Environment* getEnvironment() const { return environment; }
     void addRobot(const QString &type, int id, const QPointF &position, double speed, double orientation, double sensorRange);
     void addObstacle(int id, const QPointF &position, double size);
@@ -38,6 +38,9 @@ public:
     Robot* getRobotById(int id);
     void updateRobotView(int id);
     Obstacle* getObstacleById(int id);
+    void removeRobot(int id);
+    void removeObstacle(int id);
+
 
 signals:
     void simulationEnded();
@@ -53,7 +56,8 @@ private:
     double timeStep;
     QTimer* timer;
     std::vector<std::unique_ptr<Robot>> robots;
-    std::vector<Obstacle> obstacles;
+    std::vector<std::unique_ptr<Obstacle>> obstacles;
+
 };
 
 #endif // SIMULATIONENGINE_H

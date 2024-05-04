@@ -2,6 +2,7 @@
 #ifndef ROBOTVIEW_H
 #define ROBOTVIEW_H
 
+#include <QDebug>
 #include <QGraphicsItem>
 #include <QGraphicsEllipseItem>
 #include <QPainter>

@@ -3,7 +3,7 @@
 
 Obstacle::Obstacle(int id, std::pair<double, double> position, double size)
     : id(id), position(position), size(size) {
-    std::cout << "Obstacle created at (" << id << ", " << position.first << ", " << position.second << ") with size " << size << std::endl;
+    std::cout << "Obstacle created with ID: " << id << ", at (" << position.first << ", " << position.second << ") with size " << size << std::endl;
 }
 
 std::pair<double, double> Obstacle::getPosition() const {

@@ -7,42 +7,32 @@
 Environment::Environment() {}
 
 Environment::~Environment() {
-    for (auto robot : robots) {
-        delete robot;  
-    }
 }
 
 
-void Environment::addRobot(Robot* robot) {
-    robots.push_back(robot);
+void Environment::addRobot(std::unique_ptr<Robot> robot) {
+    robots.push_back(std::move(robot));
 }
-std::vector<Robot*>& Environment::getRobots() {
+
+std::vector<std::unique_ptr<Robot>>& Environment::getRobots() {
     return robots;
 }
 
-void Environment::addObstacle(const Obstacle& obstacle) {
-    obstacles.push_back(obstacle);
-}
-
 void Environment::clear() {
-    for (auto* robot : robots) {
-        delete robot;
-    }
     robots.clear();
     obstacles.clear();
 }
 
 bool Environment::checkCollisions(Robot* robot) {
-    bool collisionDetected = false;
     for (const auto& obstacle : obstacles) {
-        if (isCollision(robot->getPosition(), robot->getRange(), obstacle.getPosition(), obstacle.getSize())) {
-            robot->handleCollision(); 
-            collisionDetected = true;
-            break;
+        if (isCollision(robot->getPosition(), robot->getRange(), obstacle->getPosition(), obstacle->getSize())) {
+            robot->handleCollision();
+            return true;
         }
     }
-    return collisionDetected;
+    return false;
 }
+
 
 bool Environment::isCollision(const std::pair<double, double>& pos1, double size1, const std::pair<double, double>& pos2, double size2) const {
     double distance = sqrt(pow(pos1.first - pos2.first, 2) + pow(pos1.second - pos2.second, 2));
@@ -71,19 +61,15 @@ void Environment::loadConfiguration(const std::string& filename) {
             Robot* robot = nullptr;
 
             if (robotType == "autonomous") {
-                robot = new AutonomousRobot(id, {x, y}, speed, direction, sensor_range, width, height, this);
+                addRobot(std::make_unique<AutonomousRobot>(id, std::make_pair(x, y), speed, direction, sensor_range, width, height, this));
             } else if (robotType == "remote") {
-                robot = new RemoteControlledRobot(id, {x, y}, speed, direction, sensor_range);
-            }
-
-            if (robot) {
-                addRobot(robot);
+                addRobot(std::make_unique<RemoteControlledRobot>(id, std::make_pair(x, y), speed, direction, sensor_range));
             }
         } else if (type == "Obstacle") {
             int id;
             double x, y, size;
                 if (iss >> id >> x >> y >> size) {
-                    addObstacle(Obstacle(id, {x, y}, size));
+                    addObstacle(std::make_unique<Obstacle>(id, std::make_pair(x, y), size));
                 } else {
                     std::cerr << "Failed to read Obstacle data: " << line << std::endl;
                 }
@@ -92,7 +78,30 @@ void Environment::loadConfiguration(const std::string& filename) {
     file.close();
 }
 
-const std::vector<Obstacle>& Environment::getObstacles() const {
-    return obstacles;
+void Environment::addObstacle(std::unique_ptr<Obstacle> obstacle) {
+    obstacles.push_back(std::move(obstacle));
 }
 
+bool Environment::removeObstacle(int id) {
+    auto it = std::find_if(obstacles.begin(), obstacles.end(),
+                           [id](const std::unique_ptr<Obstacle>& obstacle) { return obstacle->getId() == id; });
+    if (it != obstacles.end()) {
+        obstacles.erase(it);
+        return true;
+    }
+    return false;
+}
+
+bool Environment::removeRobot(int id) {
+    auto it = std::find_if(robots.begin(), robots.end(),
+                           [id](const std::unique_ptr<Robot>& robot) { return robot->getID() == id; });
+    if (it != robots.end()) {
+        robots.erase(it);
+        return true;
+    }
+    return false;
+}
+
+const std::vector<std::unique_ptr<Obstacle>>& Environment::getObstacles() const {
+    return obstacles;
+}

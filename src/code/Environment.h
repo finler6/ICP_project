@@ -19,20 +19,22 @@ public:
     double height = 600.0; 
     Environment();  
     ~Environment();  
-    std::vector<Robot*>& getRobots();
+    std::vector<std::unique_ptr<Robot>>& getRobots();
     void loadConfiguration(const std::string& filename);
-    void addRobot(Robot* robot);
-    void addObstacle(const Obstacle& obstacle);
+    void addRobot(std::unique_ptr<Robot> robot);
+    void addObstacle(std::unique_ptr<Obstacle> obstacle);
+    bool removeObstacle(int id);
+    bool removeRobot(int id);
     void update();
     void clear();
     int getCollisionCount() const;
-    const std::vector<Obstacle>& getObstacles() const;
+    const std::vector<std::unique_ptr<Obstacle>>& getObstacles() const;
     bool checkCollisions(Robot* robot);
 
 private:
     int collisionCount;
-    std::vector<Robot*> robots;
-    std::vector<Obstacle> obstacles;;
+    std::vector<std::unique_ptr<Robot>> robots;
+    std::vector<std::unique_ptr<Obstacle>> obstacles;
     bool isCollision(const std::pair<double, double>& pos1, double size1, const std::pair<double, double>& pos2, double size2) const;
 };
 

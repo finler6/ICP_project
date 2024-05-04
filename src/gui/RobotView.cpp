@@ -3,7 +3,7 @@
 #include "RobotView.h"
 
 RobotView::RobotView(SimulationEngine* engine, int id, QGraphicsItem *parent)
-    : orientation(0), size(20), sensorRange(100), engine(engine), id(id) {
+    : QGraphicsItem(parent), orientation(0), size(20), sensorRange(100), engine(engine), id(id) {
     setPosition(QPointF(0, 0));
     updateRobotView(); 
 }
@@ -63,7 +63,8 @@ void RobotView::setSize(double newSize) {
     }
 
     int RobotView::getId() const {
-        return robotId;
+        qDebug() << "RobotView returning ID:" << id;
+        return id;
     }
 
     double RobotView::getSpeed() const {

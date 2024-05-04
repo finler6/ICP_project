@@ -24,10 +24,33 @@ void SimulationWindow::contextMenuEvent(QContextMenuEvent *event) {
     QMenu menu;
 
     if (item) {
+        emit pauseSimulation();
         QAction* removeAction = menu.addAction("Delete Object");
         QAction* modifyAction = menu.addAction("Edit Object");
-        connect(removeAction, &QAction::triggered, [this, item]() { scene->removeItem(item); });
+        connect(removeAction, &QAction::triggered, [this, item]() {
+            std::cout << "Attempting to remove an item from the scene." << std::endl;
+            if (item && scene->items().contains(item)) {
+                std::cout << "Item is valid and exists in the scene." << std::endl;
+                if (auto robotView = dynamic_cast<RobotView*>(item)) {
+                    int robotId = robotView->getId();
+                    std::cout << "Request to remove robot with ID: " << robotId << std::endl;
+                    engine->removeRobot(robotId);
+                    emit continueSimulation();
+                } else if (auto obstacleView = dynamic_cast<ObstacleView*>(item)) {
+                    int obstacleId = obstacleView->getId();
+                    engine->removeObstacle(obstacleId);
+                    emit continueSimulation();
+                } else {
+                    emit continueSimulation();
+                }
+                scene->removeItem(item);
+                delete item;
+            } else {
+                std::cout << "Item is invalid or does not exist in the scene." << std::endl;
+            }
+        });
         connect(modifyAction, &QAction::triggered, [this, item]() { modifyItem(item); });
+        
     } else {
         QAction* addRobotAction = menu.addAction("Add Robot");
         QAction* addObstacleAction = menu.addAction("Add Obstacle");
@@ -35,9 +58,7 @@ void SimulationWindow::contextMenuEvent(QContextMenuEvent *event) {
         connect(addObstacleAction, &QAction::triggered, this, &SimulationWindow::addObstacle);
     }
     menu.exec(event->globalPos());
-    scene->update();
 }
-
 
 void SimulationWindow::addRobot() {
     RobotDialog dialog(this);
@@ -128,6 +149,7 @@ void SimulationWindow::initializeScene() {
     auto robots = engine->getRobots();
     for (const auto& robot : robots) {
         RobotView* robotView = new RobotView(engine, robot->getID(), nullptr);
+        qDebug() << "Creating RobotView with ID:" << robot->getID();
         robotView->setPos(QPointF(robot->getPosition().first, robot->getPosition().second));
         robotView->setRotation(robot->getOrientation());
         robotView->setSensorRange(robot->getSensorRange());

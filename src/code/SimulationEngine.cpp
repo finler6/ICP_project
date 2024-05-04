@@ -100,46 +100,42 @@ bool SimulationEngine::checkEndConditions() {
     return false; 
 }
 
-QList<Robot*> SimulationEngine::getRobots() const {
-    std::vector<Robot*> vec = environment->getRobots();
-    QList<Robot*> list;
-    for (auto robot : vec) {
-        list.append(robot);
+std::vector<Robot*> SimulationEngine::getRobots() const {
+    std::vector<Robot*> vec;
+    for (const auto& robotPtr : environment->getRobots()) {
+        vec.push_back(robotPtr.get());
     }
-    return list;
+    return vec;
 }
 
-QList<Obstacle*> SimulationEngine::getObstacles() const {
-    std::vector<Obstacle> vec = environment->getObstacles();
-    QList<Obstacle*> list;
-    for (const Obstacle& obstacle : vec) {
-        list.append(new Obstacle(obstacle));  
+
+std::vector<Obstacle*> SimulationEngine::getObstacles() const {
+    std::vector<Obstacle*> vec;
+    for (const auto& obstacle : environment->getObstacles()) {
+        vec.push_back(obstacle.get());  // Добавляем указатель на Obstacle
     }
-    return list;
+    return vec;
 }
 
-void SimulationEngine::addRobot(const QString& type, int id, const QPointF& position, double speed, double orientation, double sensorRange) {
-    Robot* robot = nullptr;
+void SimulationEngine::addRobot(const QString& type, int id, const QPointF& position, double speed, double orientation, double sensorSize) {
+    std::unique_ptr<Robot> robot;
     if (type == "autonomous") {
-        if (!environment) {
-            std::cerr << "SimulationEngine off" << std::endl;
-            return;
-        }
-        robot = new AutonomousRobot(id, std::make_pair(position.x(), position.y()), speed, orientation, sensorRange, environment->width, environment->height, environment);
-    } else if (type == "remote") {
-        robot = new RemoteControlledRobot(id, std::make_pair(position.x(), position.y()), speed, orientation, sensorRange);
+        // Assuming maxWidth and maxHeight are class members or can be obtained somehow
+        double maxWidth = 800; // These values should be retrieved or defined properly according to your simulation setup
+        double maxHeight = 600;
+        robot = std::make_unique<AutonomousRobot>(id, std::make_pair(position.x(), position.y()), speed, orientation, sensorSize, maxWidth, maxHeight, environment);
+    } else {
+        robot = std::make_unique<RemoteControlledRobot>(id, std::make_pair(position.x(), position.y()), speed, orientation, sensorSize);
     }
-
-    if (robot) {
-        environment->addRobot(robot);
-    }
+    environment->addRobot(std::move(robot));  // Passing ownership to Environment
 }
+
 
 
 
 void SimulationEngine::addObstacle(int id, const QPointF& position, double size) {
-    Obstacle obstacle(id, std::make_pair(position.x(), position.y()), size);
-    environment->addObstacle(obstacle);
+    auto obstacle = std::make_unique<Obstacle>(id, std::make_pair(position.x(), position.y()), size);
+    environment->addObstacle(std::move(obstacle));  // Передаем владение в Environment
 }
 
 void SimulationEngine::updateRobot(int id, double speed, double orientation, double sensorSize) {
@@ -168,9 +164,8 @@ Robot* SimulationEngine::getRobotById(int id) {
 
 void SimulationEngine::updateObstacle(int id, double size) {
     for (auto& obstacle : obstacles) {
-        if (obstacle.getId() == id) {
-            obstacle.setSize(size);
-            return;
+        if (obstacle->getId() == id) {
+            obstacle->setSize(size);
         }
     }
 }
@@ -180,12 +175,45 @@ Obstacle* SimulationEngine::getObstacleById(int id) {
 
 Obstacle* SimulationEngine::findObstacleById(int id) {
     for (auto& obstacle : obstacles) {
-        if (obstacle.getId() == id) {
-            return &obstacle;
+        if (obstacle->getId() == id) {
+            return obstacle.get();
         }
     }
     return nullptr;
 }
+
+void SimulationEngine::removeRobot(int id) {
+    std::cout << "Available Robot IDs: ";
+    for (const auto& robot : environment->getRobots()) {
+        std::cout << robot->getID() << " ";
+    }
+    std::cout << std::endl;
+
+    std::cout << "Attempting to remove robot with ID: " << id << std::endl;
+    if (environment->removeRobot(id)) {
+        std::cout << "Robot removed." << std::endl;
+    } else {
+        std::cout << "Robot not found." << std::endl;
+    }
+}
+
+
+void SimulationEngine::removeObstacle(int id) {
+    if (environment->removeObstacle(id)) {
+        std::cout << "Obstacle removed." << std::endl;
+    } else {
+        std::cout << "Obstacle not found." << std::endl;
+    }
+}
+
+
+
+
+
+
+
+
+
 
 
 
