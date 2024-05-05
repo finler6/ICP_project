@@ -1,20 +1,119 @@
-
-// RobotView.cpp
+/**
+ * @file AutonomousRobot.cpp
+ * @brief Definition of the AutonomousRobot class, which extends the Robot base class with specific functionalities for autonomous navigation and obstacle detection.
+ *
+ * @author Pavel Stepanov (xstepa77)
+ * @author Gleb Litvinchuk (xlitvi02)
+ * @date 2024-05-05
+ */
 #include "RobotView.h"
 
+/**
+ * @brief Construct a new RobotView object
+ *
+ * @param engine
+ * @param id
+ * @param parent
+ */
 RobotView::RobotView(SimulationEngine* engine, int id, QGraphicsItem *parent)
-    : QGraphicsItem(parent), orientation(0), size(20), sensorRange(100), engine(engine), id(id) {
+    : QGraphicsItem(parent), id(id), engine(engine), size(20), orientation(0), sensorRange(100)  {
     setPosition(QPointF(0, 0));
 }
+
+/**
+ * @brief Get the ID of the robot
+ *
+ * @return int
+ */
+int RobotView::getId() const {
+    return id;
+}
+
+/**
+ * @brief Get the speed of the robot
+ *
+ * @return double
+ */
+double RobotView::getSpeed() const {
+    return robot->getSpeed();
+}
+
+/**
+ * @brief Get the orientation of the robot
+ *
+ * @return double
+ */
+double RobotView::getOrientation() const {
+    return robot->getOrientation();
+}
+
+/**
+ * @brief Get the sensor range of the robot
+ *
+ * @return double
+ */
+double RobotView::getSensorRange() const {
+    return robot->getRange();
+}
+
+/**
+ * @brief Get the position of the robot
+ *
+ * @return QPointF
+ */
+QPointF RobotView::getPosition() const {
+    return position;
+}
+
+/**
+ * @brief set sensor range
+ */
 void RobotView::setSensorRange(double range) {
     sensorRange = range;
     update();
 }
 
+/**
+ * @brief Set the position of the robot
+ *
+ * @param pos
+ */
+void RobotView::setPosition(const QPointF &pos) {
+    position = pos;
+    setPos(position);
+}
+
+/**
+ * @brief Set the orientation of the robot
+ *
+ * @param angle
+ */
+void RobotView::setOrientation(double angle) {
+    orientation = angle;
+    update();
+}
+
+void RobotView::setRobot(Robot* robot) {
+    if (robot) {
+        this->robot = robot;
+        this->robotId = robot->getID();
+    } else {
+        this->robot = nullptr;
+    }
+}
+
+
 QRectF RobotView::boundingRect() const {
     return QRectF(-size/2, -size/2, size, size);  
 }
 
+/**
+ * @brief Paint the robot
+ *
+ * @param painter
+ * @param option
+ * @param widget
+ */
 void RobotView::paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget) {
     Q_UNUSED(option)
     Q_UNUSED(widget)
@@ -37,58 +136,4 @@ void RobotView::paint(QPainter *painter, const QStyleOptionGraphicsItem *option,
     path.closeSubpath();
     painter->setBrush(QColor(255, 255, 0, 100));  
     painter->drawPath(path);
-}
-
-
-
-void RobotView::setPosition(const QPointF &pos) {
-    position = pos;
-    setPos(position);
-}
-
-void RobotView::setOrientation(double angle) {
-    orientation = angle;  
-    update();             
-}
-
-void RobotView::setSize(double newSize) {
-    prepareGeometryChange();
-    size = newSize;
-    update();   
-}                       
-
-void RobotView::setRobot(Robot* robot) {
-    if (robot) {
-        this->robot = robot;
-        this->robotId = robot->getID();
-    } else {
-        qDebug() << "Null robot pointer passed to RobotView::setRobot.";
-        this->robot = nullptr;  // Явно устанавливаем nullptr для избежания неопределённого поведения
-    }
-}
-
-
-    int RobotView::getId() const {
-        qDebug() << "RobotView returning ID:" << id;
-        return id;
-    }
-
-    double RobotView::getSpeed() const {
-        return robot->getSpeed();
-    }
-
-    double RobotView::getOrientation() const {
-        return robot->getOrientation();
-    }
-
-double RobotView::getSensorRange() const {
-    return robot->getRange();
-}
-
-    Robot* RobotView::getRobot() const {
-        return robot;
-    }
-
-QPointF RobotView::getPosition() const {
-    return position;
 }

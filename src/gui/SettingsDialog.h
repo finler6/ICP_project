@@ -1,17 +1,33 @@
-// SettingsDialog.h
+/**
+ * @file AutonomousRobot.cpp
+ * @brief Definition of the AutonomousRobot class, which extends the Robot base class with specific functionalities for autonomous navigation and obstacle detection.
+ *
+ * @author Pavel Stepanov (xstepa77)
+ * @author Gleb Litvinchuk (xlitvi02)
+ * @date 2024-05-05
+ */
 #ifndef SETTINGSDIALOG_H
 #define SETTINGSDIALOG_H
 
-#include <QGroupBox>
-#include <QDialog>
-#include <QPushButton>
-#include <QFormLayout>
-#include <QLineEdit>
-#include <QLabel>
-#include <QGridLayout>
-#include <QListWidget>
-#include <QTableWidget>
+#include "QGroupBox"
+#include "QDialog"
+#include "QPushButton"
+#include "QFormLayout"
+#include "QLineEdit"
+#include "QLabel"
+#include "QGridLayout"
+#include "QListWidget"
+#include "QTableWidget"
+#include "QVBoxLayout"
+#include "QHBoxLayout"
+#include "QHeaderView"
+#include "QFileDialog"
+#include "QMessageBox"
+#include "QTextStream"
 
+/**
+ * @brief The SettingsDialog class represents a dialog window for setting up the simulation environment.
+ */
 class SettingsDialog : public QDialog {
     Q_OBJECT
 

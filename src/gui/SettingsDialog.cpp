@@ -1,12 +1,17 @@
+/**
+ * @file AutonomousRobot.cpp
+ * @brief Definition of the AutonomousRobot class, which extends the Robot base class with specific functionalities for autonomous navigation and obstacle detection.
+ *
+ * @author Pavel Stepanov (xstepa77)
+ * @author Gleb Litvinchuk (xlitvi02)
+ * @date 2024-05-05
+ */
 #include "SettingsDialog.h"
-#include <QVBoxLayout>
-#include <QHBoxLayout>
-#include <QLabel>
-#include <QHeaderView>
-#include <QFileDialog>
-#include <QMessageBox>
-#include <QTextStream>
 
+/**
+ * @brief Constructor for the SettingsDialog class.
+ * @param parent The parent widget of the dialog.
+ */
 SettingsDialog::SettingsDialog(QWidget *parent) : QDialog(parent) {
     QVBoxLayout *mainLayout = new QVBoxLayout(this);
 
@@ -62,6 +67,9 @@ SettingsDialog::SettingsDialog(QWidget *parent) : QDialog(parent) {
     setWindowTitle("Configuration Editor");
 }
 
+/**
+ * @brief Adds a new robot to the table.
+ */
 void SettingsDialog::addRobot() {
     int row = robotTable->rowCount();
     robotTable->insertRow(row);
@@ -74,6 +82,9 @@ void SettingsDialog::addRobot() {
     robotTable->setItem(row, 6, new QTableWidgetItem("100"));  
 }
 
+/**
+ * @brief Adds a new obstacle to the table.
+ */
 void SettingsDialog::addObstacle() {
     int row = obstacleTable->rowCount();
     obstacleTable->insertRow(row);
@@ -83,7 +94,9 @@ void SettingsDialog::addObstacle() {
     obstacleTable->setItem(row, 3, new QTableWidgetItem("10"));  
 }
 
-
+/**
+ * @brief Removes the selected robot from the table.
+ */
 void SettingsDialog::removeRobot() {
     int row = robotTable->currentRow();
     if (row >= 0 && QMessageBox::question(this, tr("Delete Robot"), tr("Are you sure you want to delete this Robot?"), QMessageBox::Yes | QMessageBox::No) == QMessageBox::Yes) {
@@ -91,12 +104,19 @@ void SettingsDialog::removeRobot() {
     }
 }
 
+/**
+ * @brief Removes the selected obstacle from the table.
+ */
 void SettingsDialog::removeObstacle() {
     int row = obstacleTable->currentRow();
     if (row >= 0 && QMessageBox::question(this, tr("Delete Obstacle"), tr("Are you sure you want to delete this Obstacle?"), QMessageBox::Yes | QMessageBox::No) == QMessageBox::Yes) {
         obstacleTable->removeRow(row);
     }
 }
+
+/**
+ * @brief Saves the settings to a file.
+ */
 void SettingsDialog::saveSettings() {
     QString directory = QFileDialog::getExistingDirectory(this, tr("Select a folder to save"), QDir::homePath());
     
@@ -133,8 +153,9 @@ void SettingsDialog::saveSettings() {
     }
 }
 
-
-
+/**
+ * @brief Cancels the settings dialog.
+ */
 void SettingsDialog::cancel() {
     reject(); 
 }

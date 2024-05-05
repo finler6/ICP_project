@@ -1,9 +1,20 @@
-#include <QFile>
-#include <QKeyEvent>
+/**
+ * @file AutonomousRobot.cpp
+ * @brief Definition of the AutonomousRobot class, which extends the Robot base class with specific functionalities for autonomous navigation and obstacle detection.
+ *
+ * @author Pavel Stepanov (xstepa77)
+ * @author Gleb Litvinchuk (xlitvi02)
+ * @date 2024-05-05
+ */
 #include "SimulationWindow.h"
 
+/**
+ * @brief Constructor for the SimulationWindow class.
+ * @param engine Pointer to the SimulationEngine object.
+ * @param parent Pointer to the parent QWidget object.
+ */
 SimulationWindow::SimulationWindow(SimulationEngine *engine, QWidget *parent)
-    : QWidget(parent), engine(engine) {
+        : QWidget(parent), engine(engine) {
     scene = new QGraphicsScene(this);
     view = new QGraphicsView(scene, this);
     view->setSceneRect(0, 0, 800, 600);
@@ -15,10 +26,11 @@ SimulationWindow::SimulationWindow(SimulationEngine *engine, QWidget *parent)
 
     initializeScene();
     connect(engine, &SimulationEngine::updateGUI, this, &SimulationWindow::updateScene);
-    setFocusPolicy(Qt::StrongFocus);
-    //setFocus();
 }
 
+/**
+ * @brief Context menu event handler for the SimulationWindow class.
+ */
 void SimulationWindow::contextMenuEvent(QContextMenuEvent *event) {
     QPointF scenePoint = view->mapToScene(event->pos());
     QGraphicsItem* item = scene->itemAt(scenePoint, QTransform());
@@ -53,7 +65,7 @@ void SimulationWindow::contextMenuEvent(QContextMenuEvent *event) {
             }
         });
         connect(modifyAction, &QAction::triggered, [this, item]() { modifyItem(item); });
-        
+
     } else {
         QAction* addRobotAction = menu.addAction("Add Robot");
         QAction* addObstacleAction = menu.addAction("Add Obstacle");
@@ -63,8 +75,10 @@ void SimulationWindow::contextMenuEvent(QContextMenuEvent *event) {
     menu.exec(event->globalPos());
 }
 
-void SimulationWindow::keyPressEvent(QKeyEvent *event) {
-    this->setFocus();  // Устанавливаем фокус на SimulationWindow
+/**
+ * @brief Key press event handler for the SimulationWindow class.
+ */
+void SimulationWindow::handleKeyPress(QKeyEvent *event) {
     if (event->isAutoRepeat())  // Игнорируем события автоповтора
         return;
 
@@ -82,12 +96,15 @@ void SimulationWindow::keyPressEvent(QKeyEvent *event) {
             engine->sendCommand("start_turn_right");
             break;
         default:
-            QWidget::keyPressEvent(event); // Передаем обработку дальше, если клавиша не обработана
+            QWidget::keyPressEvent(event);
     }
 }
 
-void SimulationWindow::keyReleaseEvent(QKeyEvent *event) {
-    if (event->isAutoRepeat())  // Игнорируем события автоповтора
+/**
+ * @brief Key release event handler for the SimulationWindow class.
+ */
+void SimulationWindow::handleKeyRelease(QKeyEvent *event) {
+    if (event->isAutoRepeat())
         return;
 
     switch (event->key()) {
@@ -104,10 +121,13 @@ void SimulationWindow::keyReleaseEvent(QKeyEvent *event) {
             engine->sendCommand("stop_turn_right");
             break;
         default:
-            QWidget::keyReleaseEvent(event); // Передаем обработку дальше, если клавиша не обработана
+            QWidget::keyReleaseEvent(event);
     }
 }
 
+/**
+ * @brief Add a robot to the scene.
+ */
 void SimulationWindow::addRobot() {
     RobotDialog dialog(clickPosition, this);
     if (dialog.exec() == QDialog::Accepted) {
@@ -119,14 +139,16 @@ void SimulationWindow::addRobot() {
         double sensorSize = dialog.getSensorSize();
         engine->addRobot(type, id, position, speed, orientation, sensorSize);
         QGraphicsEllipseItem* robotItem = new QGraphicsEllipseItem(
-            position.x() - 10, position.y() - 10, 20, 20
+                position.x() - 10, position.y() - 10, 20, 20
         );
-        robotItem->setBrush(Qt::blue);  
+        robotItem->setBrush(Qt::blue);
         scene->addItem(robotItem);
     }
 }
 
-
+/**
+ * @brief Add an obstacle to the scene.
+ */
 void SimulationWindow::addObstacle() {
     ObstacleDialog dialog(clickPosition, this);
     if (dialog.exec() == QDialog::Accepted) {
@@ -137,18 +159,19 @@ void SimulationWindow::addObstacle() {
         engine->addObstacle(id, position, size);
 
         QGraphicsRectItem* obstacleItem = new QGraphicsRectItem(
-            position.x() - size / 2, position.y() - size / 2, size, size
+                position.x() - size / 2, position.y() - size / 2, size, size
         );
-        obstacleItem->setBrush(Qt::gray);  
+        obstacleItem->setBrush(Qt::gray);
         scene->addItem(obstacleItem);
     }
 }
 
+/**
+ * @brief Modify an item in the scene.
+ */
 void SimulationWindow::modifyItem(QGraphicsItem* item) {
     if (auto robotView = dynamic_cast<RobotView*>(item)) {
         RobotDialog dialog(clickPosition, this);
-        qDebug() << "Updating robot with ID:" << robotView->getId();
-        qDebug() << "Initial values: speed=" << robotView->getSpeed() << ", orientation=" << robotView->getOrientation() << ", sensorSize=" << robotView->getSensorRange();
         dialog.setInitialValues(robotView->getId(), robotView->getSpeed(), robotView->getOrientation(), robotView->getSensorRange(), robotView->getPosition());
         if (dialog.exec() == QDialog::Accepted) {
             engine->updateRobot(robotView->getId(), dialog.getSpeed(), dialog.getOrientation(), dialog.getSensorSize(), dialog.getPosition().x(), dialog.getPosition().y());
@@ -157,40 +180,16 @@ void SimulationWindow::modifyItem(QGraphicsItem* item) {
         ObstacleDialog dialog(clickPosition, this);
         dialog.setInitialSize(obstacleView->getId(), obstacleView->getSize(), obstacleView->getPosition());
         if (dialog.exec() == QDialog::Accepted) {
-            qDebug() << "Updating obstacle with ID:" << obstacleView->getId() << " to size:" << dialog.getSize();
             engine->updateObstacle(obstacleView->getId(), dialog.getSize(), dialog.getPosition().x(), dialog.getPosition().y());
         }
     }
     updateScene();
 }
 
-
-
-void SimulationWindow::saveConfiguration() {
-    QFile file(ConfigManager::getConfigPath());
-    if (!file.open(QIODevice::Append | QIODevice::Text)) {
-        qDebug() << "Cannot open file for appending: " << file.errorString();
-        return;
-    }
-
-    QTextStream out(&file);
-    if (lastAddedType == "Robot") {
-        out << "Robot " << lastRobotType << " " << lastAddedId << " "
-            << lastAddedX << " " << lastAddedY << " "
-            << lastAddedParam1 << " " << lastAddedParam2 << " " << lastAddedParam3 << "\n";
-    } else if (lastAddedType == "Obstacle") {
-        out << "Obstacle " << lastAddedId << " " << lastAddedX << " " << lastAddedY << " " << lastAddedParam1 << "\n";
-    }
-
-    file.close();
-}
-
-
-
-void SimulationWindow::onGuiUpdate() {
-    updateScene();
-}
-
+/**
+ * @brief Initialize the scene with robots and obstacles.
+ * @details This method is called when the simulation window is created.
+ */
 void SimulationWindow::initializeScene() {
     scene->clear();
     robotViews.clear();
@@ -198,7 +197,6 @@ void SimulationWindow::initializeScene() {
     auto robots = engine->getRobots();
     for (const auto& robot : robots) {
         RobotView* robotView = new RobotView(engine, robot->getID(), nullptr);
-        qDebug() << "Creating RobotView with ID:" << robot->getID();
         robotView->setPos(QPointF(robot->getPosition().first, robot->getPosition().second));
         robotView->setRotation(robot->getOrientation());
         robotView->setSensorRange(robot->getSensorRange());
@@ -215,6 +213,10 @@ void SimulationWindow::initializeScene() {
     }
 }
 
+/**
+ * @brief Update the scene with the current state of the simulation.
+ * @details This method is called when the simulation engine emits the updateGUI signal.
+ */
 void SimulationWindow::updateScene() {
     scene->clear();
     robotViews.clear();
@@ -225,7 +227,6 @@ void SimulationWindow::updateScene() {
         RobotView* robotView = new RobotView(engine, robot->getID(), nullptr);
         robotView->setPosition(QPointF(robot->getPosition().first, robot->getPosition().second));
         robotView->setOrientation(robot->getOrientation());
-        qDebug() << "Updating RobotView with ID:" << robot->getID() << " to speed:" << robot->getSpeed() << ", orientation:" << robot->getOrientation() << ", sensorSize:" << robot->getSensorRange();
         robotView->setSensorRange(robot->getSensorRange());
         robotView->setRobot(robot);
         scene->addItem(robotView);
@@ -239,25 +240,34 @@ void SimulationWindow::updateScene() {
         obstacleViews.insert(obstacle->getId(), obstacleView);
     }
     scene->update();
-    //setfocus
 }
 
-
-
+/**
+ * @brief Start the simulation.
+ */
 void SimulationWindow::startSimulation() {
     engine->start();
-    this->setFocus();  // Возвращаем фокус на виджет SimulationWindow
+    setFocus();
 }
 
+/**
+ * @brief Pause the simulation.
+ */
 void SimulationWindow::pauseSimulation() {
     engine->pause();
 }
 
+/**
+ * @brief Continue the simulation.
+ */
 void SimulationWindow::continueSimulation() {
     engine->resume();
-    this->setFocus();  // Возвращаем фокус на виджет SimulationWindow
+    setFocus();
 }
 
+/**
+ * @brief Stop the simulation.
+ */
 void SimulationWindow::stopSimulation() {
     engine->stop();
 }
