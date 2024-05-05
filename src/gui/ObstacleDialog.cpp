@@ -1,9 +1,9 @@
 #include "ObstacleDialog.h"
 
-ObstacleDialog::ObstacleDialog(QWidget *parent) : QDialog(parent) {
+ObstacleDialog::ObstacleDialog(const QPointF& clickPosition, QWidget *parent) : QDialog(parent) {
     idEdit = new QLineEdit(this);
-    xEdit = new QLineEdit(this);
-    yEdit = new QLineEdit(this);
+    xEdit = new QLineEdit(QString::number(clickPosition.x()), this);  // Set initial X coordinate
+    yEdit = new QLineEdit(QString::number(clickPosition.y()), this);
     sizeEdit = new QLineEdit(this);
 
     idEdit->setValidator(new QIntValidator(this));
@@ -44,8 +44,11 @@ double ObstacleDialog::getSize() const {
     return sizeEdit->text().toDouble();
 }
 
-void ObstacleDialog::setInitialSize(double size) {
+void ObstacleDialog::setInitialSize(int id, double size, const QPointF& position) {
     sizeEdit->setText(QString::number(size));
+    idEdit->setText(QString::number(id));
+    xEdit->setText(QString::number(position.x()));
+    yEdit->setText(QString::number(position.y()));
 }
 
 

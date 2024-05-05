@@ -9,19 +9,21 @@
 #include <QComboBox>
 #include <QDoubleValidator>
 #include <QIntValidator>
+#include <QPointF>
+#include "SimulationWindow.h"
 
 class RobotDialog : public QDialog {
     Q_OBJECT
 
 public:
-    explicit RobotDialog(QWidget *parent = nullptr);
+    explicit RobotDialog(const QPointF& clickPosition, QWidget *parent = nullptr);
     QString getType() const;
     int getId() const;
     QPointF getPosition() const;
     double getSpeed() const;
     double getOrientation() const;
     double getSensorSize() const;
-    void setInitialValues(double speed, double orientation, double sensorSize);
+    void setInitialValues(int id, double speed, double orientation, double sensorSize, const QPointF& position);
     void setInitialPosition(const QPointF &position);
     void setInitialId(int id);
 

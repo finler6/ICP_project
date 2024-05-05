@@ -109,11 +109,11 @@ void SimulationWindow::keyReleaseEvent(QKeyEvent *event) {
 }
 
 void SimulationWindow::addRobot() {
-    RobotDialog dialog(this);
+    RobotDialog dialog(clickPosition, this);
     if (dialog.exec() == QDialog::Accepted) {
         QString type = dialog.getType();
         int id = dialog.getId();
-        QPointF position = clickPosition;
+        QPointF position = dialog.getPosition();
         double speed = dialog.getSpeed();
         double orientation = dialog.getOrientation();
         double sensorSize = dialog.getSensorSize();
@@ -128,10 +128,10 @@ void SimulationWindow::addRobot() {
 
 
 void SimulationWindow::addObstacle() {
-    ObstacleDialog dialog(this);
+    ObstacleDialog dialog(clickPosition, this);
     if (dialog.exec() == QDialog::Accepted) {
         int id = dialog.getId();
-        QPointF position = clickPosition;
+        QPointF position = dialog.getPosition();
         double size = dialog.getSize();
 
         engine->addObstacle(id, position, size);
@@ -146,18 +146,19 @@ void SimulationWindow::addObstacle() {
 
 void SimulationWindow::modifyItem(QGraphicsItem* item) {
     if (auto robotView = dynamic_cast<RobotView*>(item)) {
-        RobotDialog dialog(this);
-        dialog.setInitialValues(robotView->getSpeed(), robotView->getOrientation(), robotView->getSensorRange());
+        RobotDialog dialog(clickPosition, this);
+        qDebug() << "Updating robot with ID:" << robotView->getId();
+        qDebug() << "Initial values: speed=" << robotView->getSpeed() << ", orientation=" << robotView->getOrientation() << ", sensorSize=" << robotView->getSensorRange();
+        dialog.setInitialValues(robotView->getId(), robotView->getSpeed(), robotView->getOrientation(), robotView->getSensorRange(), robotView->getPosition());
         if (dialog.exec() == QDialog::Accepted) {
-            engine->updateRobot(robotView->getId(), dialog.getSpeed(), dialog.getOrientation(), dialog.getSensorSize());
-            robotView->updateRobotView();
+            engine->updateRobot(robotView->getId(), dialog.getSpeed(), dialog.getOrientation(), dialog.getSensorSize(), dialog.getPosition().x(), dialog.getPosition().y());
         }
     } else if (auto obstacleView = dynamic_cast<ObstacleView*>(item)) {
-        ObstacleDialog dialog(this);
-        dialog.setInitialSize(obstacleView->getSize());
+        ObstacleDialog dialog(clickPosition, this);
+        dialog.setInitialSize(obstacleView->getId(), obstacleView->getSize(), obstacleView->getPosition());
         if (dialog.exec() == QDialog::Accepted) {
-            engine->updateObstacle(obstacleView->getId(), dialog.getSize());
-            obstacleView->updateObstacleView();
+            qDebug() << "Updating obstacle with ID:" << obstacleView->getId() << " to size:" << dialog.getSize();
+            engine->updateObstacle(obstacleView->getId(), dialog.getSize(), dialog.getPosition().x(), dialog.getPosition().y());
         }
     }
     updateScene();
@@ -201,6 +202,7 @@ void SimulationWindow::initializeScene() {
         robotView->setPos(QPointF(robot->getPosition().first, robot->getPosition().second));
         robotView->setRotation(robot->getOrientation());
         robotView->setSensorRange(robot->getSensorRange());
+        robotView->setRobot(robot);
         scene->addItem(robotView);
         robotViews.insert(robot->getID(), robotView);
     }
@@ -223,7 +225,9 @@ void SimulationWindow::updateScene() {
         RobotView* robotView = new RobotView(engine, robot->getID(), nullptr);
         robotView->setPosition(QPointF(robot->getPosition().first, robot->getPosition().second));
         robotView->setOrientation(robot->getOrientation());
+        qDebug() << "Updating RobotView with ID:" << robot->getID() << " to speed:" << robot->getSpeed() << ", orientation:" << robot->getOrientation() << ", sensorSize:" << robot->getSensorRange();
         robotView->setSensorRange(robot->getSensorRange());
+        robotView->setRobot(robot);
         scene->addItem(robotView);
         robotViews.insert(robot->getID(), robotView);
     }

@@ -8,16 +8,18 @@
 #include <QLabel>
 #include <QIntValidator>
 #include <QDoubleValidator>
+#include <QPointF>
+#include "SimulationWindow.h"
 
 class ObstacleDialog : public QDialog {
     Q_OBJECT
 
 public:
-    explicit ObstacleDialog(QWidget *parent = nullptr);
+    explicit ObstacleDialog(const QPointF& clickPosition, QWidget *parent = nullptr);
     int getId() const;
     QPointF getPosition() const;
     double getSize() const;
-    void setInitialSize(double size);
+    void setInitialSize(int id, double size, const QPointF& position);
 
 private:
     QLineEdit *idEdit;

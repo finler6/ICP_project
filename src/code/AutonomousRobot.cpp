@@ -17,7 +17,6 @@ AutonomousRobot::AutonomousRobot(int id, std::pair<double, double> position, dou
     if (!environment) {
         std::cerr << "Environment pointer is null" << std::endl;
     }
-    this->sensorRange = sensorRange; 
 }
 
 

@@ -24,4 +24,8 @@ int Obstacle::getId() const {
     return id;
 }
 
+void Obstacle::setPosition(const std::pair<double, double>& position) {
+    this->position = position;
+}
+
 

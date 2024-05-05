@@ -2,7 +2,7 @@
 # Формат: тип {параметры}
 
 # Роботы
-Robot remote 1 100 25 5 5 90.0
-
+Robot autonomous 1 100 25 5 1 90.0
+Robot autonomous 2 150 400 5 1 90.0
 # Препятствия
 Obstacle 1 350 65 200

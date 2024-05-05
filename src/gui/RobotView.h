@@ -6,6 +6,7 @@
 #include <QGraphicsItem>
 #include <QGraphicsEllipseItem>
 #include <QPainter>
+#include <QPointF>
 #include <cmath>
 #include "code/Robot.h"
 #include "code/SimulationEngine.h"
@@ -29,7 +30,7 @@ public:
     double getSpeed() const;
     double getOrientation() const;
     double getSensorRange() const;
-    void updateRobotView();
+    QPointF getPosition() const;
 
 signals:
     void requestUpdate(int id);

@@ -5,7 +5,6 @@
 RobotView::RobotView(SimulationEngine* engine, int id, QGraphicsItem *parent)
     : QGraphicsItem(parent), orientation(0), size(20), sensorRange(100), engine(engine), id(id) {
     setPosition(QPointF(0, 0));
-    updateRobotView(); 
 }
 void RobotView::setSensorRange(double range) {
     sensorRange = range;
@@ -55,12 +54,19 @@ void RobotView::setOrientation(double angle) {
 void RobotView::setSize(double newSize) {
     prepareGeometryChange();
     size = newSize;
-    update();
-}
-    void RobotView::setRobot(Robot* robot) {
+    update();   
+}                       
+
+void RobotView::setRobot(Robot* robot) {
+    if (robot) {
         this->robot = robot;
         this->robotId = robot->getID();
+    } else {
+        qDebug() << "Null robot pointer passed to RobotView::setRobot.";
+        this->robot = nullptr;  // Явно устанавливаем nullptr для избежания неопределённого поведения
     }
+}
+
 
     int RobotView::getId() const {
         qDebug() << "RobotView returning ID:" << id;
@@ -75,21 +81,14 @@ void RobotView::setSize(double newSize) {
         return robot->getOrientation();
     }
 
-    double RobotView::getSensorRange() const {
-        return robot->getSensorRange();
-    } 
+double RobotView::getSensorRange() const {
+    return robot->getRange();
+}
 
     Robot* RobotView::getRobot() const {
         return robot;
     }
 
-
-void RobotView::updateRobotView() {
-    Robot* robot = engine->getRobotById(id);
-    if (robot) {
-        auto pos = robot->getPosition(); 
-        setPos(QPointF(pos.first, pos.second)); 
-        setRotation(robot->getOrientation()); 
-
-    }
+QPointF RobotView::getPosition() const {
+    return position;
 }

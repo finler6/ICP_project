@@ -12,6 +12,7 @@ public:
     QRectF getBounds() const;
     int getId() const;
     void setSize(double newSize) { size = newSize; }
+    void setPosition(const std::pair<double, double>& position);
 
 private:
     int id;

@@ -20,6 +20,7 @@ public:
     void setSpeed(double speed);
     void setOrientation(double orientation);
     void setSensorSize(double sensorSize);
+    void setPosition(const std::pair<double, double>& position);
 
 private:
     bool taskCompleted = false;  

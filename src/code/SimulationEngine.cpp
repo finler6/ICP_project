@@ -144,48 +144,51 @@ void SimulationEngine::addObstacle(int id, const QPointF& position, double size)
     environment->addObstacle(std::move(obstacle));  // Передаем владение в Environment
 }
 
-void SimulationEngine::updateRobot(int id, double speed, double orientation, double sensorSize) {
-    Robot* robot = findRobotById(id);
+void SimulationEngine::updateRobot(int id, double speed, double orientation, double sensorSize, double x, double y) {
+    Robot* robot = getRobotById(id);
     if (robot) {
         robot->setSpeed(speed);
         robot->setOrientation(orientation);
         robot->setSensorSize(sensorSize);
+        robot->setPosition(std::make_pair(x, y));  // Обновляем позицию
+        qDebug() << "Updating robot with ID:" << id << " to speed:" << speed << ", orientation:" << orientation << ", sensorSize:" << sensorSize;
+    } else {
+        qDebug() << "No robot found with ID:" << id << ", update failed.";
     }
 }
 
 
 Robot* SimulationEngine::findRobotById(int id) {
-    for (auto& robot : robots) { 
-        if (robot->getID() == id) {
-            return robot.get(); 
-        }
-    }
-    return nullptr; 
+    auto& robots = environment->getRobots();
+    auto it = std::find_if(robots.begin(), robots.end(),
+                           [id](const std::unique_ptr<Robot>& robot) { return robot->getID() == id; });
+    return it != robots.end() ? it->get() : nullptr;
 }
-
 
 Robot* SimulationEngine::getRobotById(int id) {
-    return findRobotById(id); 
+    return findRobotById(id);
 }
 
-void SimulationEngine::updateObstacle(int id, double size) {
-    for (auto& obstacle : obstacles) {
-        if (obstacle->getId() == id) {
-            obstacle->setSize(size);
-        }
+void SimulationEngine::updateObstacle(int id, double size, double x, double y) {
+    Obstacle* obstacle = getObstacleById(id);
+    if (obstacle) {
+        qDebug() << "Updating obstacle with ID:" << id << " to size:" << size;
+        obstacle->setSize(size);
+        obstacle->setPosition(std::make_pair(x, y));
+    } else {
+        qDebug() << "No obstacle found with ID:" << id << ", update failed.";
     }
 }
+
+
 Obstacle* SimulationEngine::getObstacleById(int id) {
     return findObstacleById(id);
 }
 
 Obstacle* SimulationEngine::findObstacleById(int id) {
-    for (auto& obstacle : obstacles) {
-        if (obstacle->getId() == id) {
-            return obstacle.get();
-        }
-    }
-    return nullptr;
+    auto it = std::find_if(environment->getObstacles().begin(), environment->getObstacles().end(),
+                           [id](const std::unique_ptr<Obstacle>& obstacle) { return obstacle->getId() == id; });
+    return it != environment->getObstacles().end() ? it->get() : nullptr;
 }
 
 void SimulationEngine::removeRobot(int id) {

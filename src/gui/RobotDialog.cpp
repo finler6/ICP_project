@@ -1,13 +1,13 @@
 #include "RobotDialog.h"
 
-RobotDialog::RobotDialog(QWidget *parent) : QDialog(parent) {
+RobotDialog::RobotDialog(const QPointF& clickPosition, QWidget *parent) : QDialog(parent) {
     typeEdit = new QComboBox(this);
     typeEdit->addItem("autonomous");
     typeEdit->addItem("remote");
 
     idEdit = new QLineEdit(this);
-    xEdit = new QLineEdit(this);
-    yEdit = new QLineEdit(this);
+    xEdit = new QLineEdit(QString::number(clickPosition.x()), this);  // Set initial X coordinate
+    yEdit = new QLineEdit(QString::number(clickPosition.y()), this);
     speedEdit = new QLineEdit(this);
     orientationEdit = new QLineEdit(this);
     sensorSizeEdit = new QLineEdit(this);
@@ -70,11 +70,18 @@ double RobotDialog::getSensorSize() const {
     return sensorSizeEdit->text().toDouble();
 }
 
-void RobotDialog::setInitialValues(double speed, double orientation, double sensorSize) {
-    speedEdit->setText(QString::number(speed));
-    orientationEdit->setText(QString::number(orientation));
-    sensorSizeEdit->setText(QString::number(sensorSize));
+void RobotDialog::setInitialValues(int id, double speed, double orientation, double sensorSize, const QPointF& position) {
+    if (speedEdit && orientationEdit && sensorSizeEdit) {
+        idEdit->setText(QString::number(id));
+        speedEdit->setText(QString::number(speed));
+        orientationEdit->setText(QString::number(orientation));
+        sensorSizeEdit->setText(QString::number(sensorSize));
+        setInitialPosition(position);
+    } else {
+        qDebug() << "One of the edits is not initialized";
+    }
 }
+
 
 void RobotDialog::setInitialPosition(const QPointF &position) {
     xEdit->setText(QString::number(position.x()));

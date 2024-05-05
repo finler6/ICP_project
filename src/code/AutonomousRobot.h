@@ -18,7 +18,6 @@ private:
     double avoidanceAngle;  
     Environment* environment;
     void rotate(double angle) override;
-    double sensorRange;  
     double lastObstacleAngle;  
     void updatePosition(double newX, double newY, double maxWidth, double maxHeight);
     bool isEdgeWithinSensorRange(double maxWidth, double maxHeight);

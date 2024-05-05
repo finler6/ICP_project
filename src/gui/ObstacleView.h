@@ -6,6 +6,7 @@
 #include <QGraphicsItem>
 #include <QPainter>
 #include <QRectF>
+#include <QPointF>
 #include "code/Obstacle.h"
 #include "code/SimulationEngine.h"
 
@@ -21,7 +22,7 @@ public:
     void setSize(double size);
     int getId() const;  
     void setId(int newId);  
-    void updateObstacleView();
+    QPointF getPosition() const;
 private:
     QRectF bounds;
     int id;

@@ -32,8 +32,8 @@ public:
     Environment* getEnvironment() const { return environment; }
     void addRobot(const QString &type, int id, const QPointF &position, double speed, double orientation, double sensorRange);
     void addObstacle(int id, const QPointF &position, double size);
-    void updateRobot(int id, double speed, double orientation, double sensorSize);
-    void updateObstacle(int id, double size);
+    void updateRobot(int id, double speed, double orientation, double sensorSize, double x, double y);
+    void updateObstacle(int id, double size, double x, double y);
     Robot* findRobotById(int id);
     Robot* getRobotById(int id);
     void updateRobotView(int id);

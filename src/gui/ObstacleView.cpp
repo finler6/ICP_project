@@ -40,9 +40,8 @@ void ObstacleView::setId(int newId) {
     id = newId;
 }
 
-void ObstacleView::updateObstacleView() {
-    Obstacle* obstacle = engine->getObstacleById(id);
-    if (obstacle) {
-        setBounds(obstacle->getBounds());
-    }
+QPointF ObstacleView::getPosition() const {
+    // Возвращает координаты центра прямоугольника bounds
+    return QPointF(bounds.center().x(), bounds.center().y());
 }
+
