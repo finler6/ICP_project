@@ -40,7 +40,15 @@ class SimulationEngine : public QObject {
     Q_OBJECT
 
 public:
+    /**
+ * @brief Constructs a simulation engine with a specified environment.
+ * @param environment Pointer to the environment object where the simulation takes place.
+ * @param parent Pointer to the parent QObject, default is nullptr.
+ */
     explicit SimulationEngine(Environment* environment, QObject* parent = nullptr);
+    /**
+ * @brief Destructor for the SimulationEngine.
+ */
     virtual ~SimulationEngine();
     /**
      * @brief Retrieves the environment being simulated.

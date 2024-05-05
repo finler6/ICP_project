@@ -1,3 +1,12 @@
+/**
+ * @file AutonomousRobot.cpp
+ * @brief Definition of the AutonomousRobot class, which extends the Robot base class with specific functionalities for autonomous navigation and obstacle detection.
+ *
+ * @author Pavel Stepanov (xstepa77)
+ * @author Gleb Litvinchuk (xlitvi02)
+ * @date 2024-05-05
+ */
+
 #include "AutonomousRobot.h"
 #include "QDebug"
 #include "cmath"
@@ -25,6 +34,14 @@ AutonomousRobot::AutonomousRobot(int id, std::pair<double, double> position, dou
 }
 
 
+/**
+ * @brief Detects obstacles within the sensor range and the given boundaries.
+ * @param maxWidth Maximum width of the operational area.
+ * @param maxHeight Maximum height of the operational area.
+ * @return True if an obstacle is detected within the range, otherwise false.
+ *
+ * This method checks for any obstacles within a specified angle and range using the robot's sensors. If an obstacle is detected, the function returns true.
+ */
 bool AutonomousRobot::detectObstacle(double maxWidth, double maxHeight) {
     double radianOrientation = getOrientation() * M_PI / 180.0;
     double robotRadius = 10.0;
@@ -78,10 +95,27 @@ bool AutonomousRobot::isEdgeWithinSensorRange(double maxWidth, double maxHeight)
            checkBoundary(rightX, rightY, maxWidth, maxHeight);
 }
 
+/**
+ * @brief Checks whether the proposed new position is within the boundaries of the operational area.
+ * @param x The x-coordinate of the proposed new position.
+ * @param y The y-coordinate of the proposed new position.
+ * @param maxWidth The maximum allowed width of the area.
+ * @param maxHeight The maximum allowed height of the area.
+ * @return True if the new position is within the boundaries, false otherwise.
+ *
+ * This method checks whether a given position is within the defined boundaries of the operating environment.
+ */
 bool AutonomousRobot::checkBoundary(double x, double y, double maxWidth, double maxHeight) {
     return x <= 0 || x >= maxWidth || y <= 0 || y >= maxHeight;
 }
 
+/**
+ * @brief Moves the robot within the environment, considering potential obstacles.
+ * @param maxWidth Maximum width of the environment.
+ * @param maxHeight Maximum height of the environment.
+ *
+ * This method attempts to move the robot based on its current velocity and orientation, checking for and responding to obstacles as needed.
+ */
 void AutonomousRobot::move(double maxWidth, double maxHeight) {
     if (detectObstacle(maxWidth, maxHeight)) {
         handleCollision();
@@ -116,10 +150,22 @@ void AutonomousRobot::rotate(double angle) {
     orientation = fmod(orientation, 360.0);
 }
 
+/**
+ * @brief Handles the collision by initiating an avoidance maneuver.
+ *
+ * This method is called when a collision is detected and typically involves rotating the robot to an angle meant to avoid the collision.
+ */
 void AutonomousRobot::handleCollision() {
     rotate(avoidanceAngle);
 }
 
+/**
+ * @brief Attempts to move the robot to a new position, considering possible obstacles.
+ * @param maxWidth The maximum width of the environment.
+ * @param maxHeight The maximum height of the environment.
+ *
+ * This method computes a new proposed position based on the current orientation and velocity. It checks if the move is possible and adjusts the position step by step if necessary.
+ */
 void AutonomousRobot::tryMove(double maxWidth, double maxHeight) {
     double radianOrientation = orientation * M_PI / 180.0;
     double proposedX = position.first + velocity * cos(radianOrientation);
@@ -158,7 +204,16 @@ void AutonomousRobot::tryMove(double maxWidth, double maxHeight) {
 }
 
 
-
+/**
+ * @brief Determines if the robot can move to a specified location without colliding with obstacles or other robots.
+ * @param x The x-coordinate of the proposed location.
+ * @param y The y-coordinate of the proposed location.
+ * @param maxWidth The maximum width of the environment.
+ * @param maxHeight The maximum height of the environment.
+ * @return True if the move is possible without collision, false otherwise.
+ *
+ * This method checks for the presence of obstacles and other robots at the proposed location, ensuring no collisions will occur if the robot moves there.
+ */
 bool AutonomousRobot::canMoveTo(double x, double y, double maxWidth, double maxHeight) {
     if (x < 0 || x > maxWidth || y < 0 || y > maxHeight) {
         return false;
@@ -185,6 +240,7 @@ bool AutonomousRobot::canMoveTo(double x, double y, double maxWidth, double maxH
     return true;
 }
 
+
 /**
  * @brief Checks if a line intersects with a rectangle.
  * @param x1 x-coordinate of the first point of the line.
@@ -208,6 +264,20 @@ bool AutonomousRobot::lineIntersectsRect(double x1, double y1, double x2, double
             lineIntersectsLine(x1, y1, x2, y2, right, top, right, bottom));
 }
 
+/**
+ * @brief Checks if two line segments intersect.
+ * @param x1 x-coordinate of the start point of the first line.
+ * @param y1 y-coordinate of the start point of the first line.
+ * @param x2 x-coordinate of the end point of the first line.
+ * @param y2 y-coordinate of the end point of the first line.
+ * @param x3 x-coordinate of the start point of the second line.
+ * @param y3 y-coordinate of the start point of the second line.
+ * @param x4 x-coordinate of the end point of the second line.
+ * @param y4 y-coordinate of the end point of the second line.
+ * @return True if the lines intersect, false otherwise.
+ *
+ * This method calculates if two line segments intersect by determining if each line segment crosses the path of the other.
+ */
 bool AutonomousRobot::lineIntersectsLine(double x1, double y1, double x2, double y2, double x3, double y3, double x4, double y4) {
     double denominator = (y4 - y3) * (x2 - x1) - (x4 - x3) * (y2 - y1);
 

@@ -1,3 +1,12 @@
+/**
+ * @file Robot.h
+ * @brief Abstract base class for Robot, providing fundamental attributes and functionalities for different robotic implementations.
+ *
+ * This class serves as a foundation for creating different types of robots by defining basic properties and mandatory operations such as movement, rotation, and collision handling.
+ * @author Pavel Stepanov (xstepa77)
+ * @author Gleb Litvinchuk (xlitvi02)
+ * @date 2024-05-05
+ */
 #pragma once
 
 #include "utility"
@@ -8,7 +17,18 @@
 class Robot {
 
 public:
+    /**
+ * @brief Constructor for Robot class that initializes a new Robot instance.
+ * @param id Unique identifier for the robot.
+ * @param position Initial position of the robot represented as a pair (x-coordinate, y-coordinate).
+ * @param velocity Initial velocity of the robot.
+ * @param orientation Initial orientation of the robot in degrees.
+ * @param sensorRange Range of the sensors attached to the robot.
+ */
     Robot(int id, std::pair<double, double> position, double velocity, double orientation, double sensorRange);
+    /**
+ * @brief Virtual destructor for Robot class.
+ */
     virtual ~Robot() = default;
     /**
  * @brief Pure virtual function to handle collision scenarios.
@@ -75,6 +95,10 @@ public:
  * @param position A pair of double values representing the new position (x, y) of the robot.
  */
     void setPosition(const std::pair<double, double>& position);
+    /**
+ * @brief Get the current position of the robot.
+ * @return A pair representing the x and y coordinates of the robot.
+ */
 
     [[nodiscard]] std::pair<double, double> getPosition() const;
 

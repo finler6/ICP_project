@@ -62,14 +62,26 @@ void Robot::setPosition(const std::pair<double, double>& position) {
     this->position = position;
 }
 
+/**
+ * @brief Set a new speed for the robot.
+ * @param speed The new speed of the robot.
+ */
 void Robot::setSpeed(double speed) {
     this->velocity = speed;
 }
 
+/**
+ * @brief Set a new orientation for the robot.
+ * @param orientation The new orientation of the robot in degrees.
+ */
 void Robot::setOrientation(double orientation) {
     this->orientation = orientation;
 }
 
+/**
+ * @brief Set a new sensor range for the robot.
+ * @param sensorSize The new size of the sensor range.
+ */
 void Robot::setSensorSize(double sensorSize) {
     this->sensorRange = sensorSize;
 }
